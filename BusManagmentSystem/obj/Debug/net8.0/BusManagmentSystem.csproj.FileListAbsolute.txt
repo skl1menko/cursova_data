@@ -157,3 +157,4 @@ E:\cursova_data\BusManagmentSystem\obj\Debug\net8.0\refint\BusManagmentSystem.dl
 E:\cursova_data\BusManagmentSystem\obj\Debug\net8.0\BusManagmentSystem.pdb
 E:\cursova_data\BusManagmentSystem\obj\Debug\net8.0\BusManagmentSystem.genruntimeconfig.cache
 E:\cursova_data\BusManagmentSystem\obj\Debug\net8.0\ref\BusManagmentSystem.dll
+E:\cursova_data\BusManagmentSystem\obj\Debug\net8.0\BusManagmentSystem.sourcelink.json

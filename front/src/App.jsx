@@ -1,10 +1,12 @@
-import { useState } from 'react'
-import './App.css'
+import React from "react"; // Імпортуємо компонент BusList
+import BusList from "./components/BusList";
 
 function App() {
   return (
-    <></>
-  )
+    <div className="App">
+      <BusList /> 
+    </div>
+  );
 }
 
-export default App
+export default App;
