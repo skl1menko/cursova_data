@@ -4,4 +4,6 @@ public class Driver
     public string Name { get; set; }
     public string License { get; set; }
     public int Experience { get; set; }
+
+    public virtual ICollection<Schedule> Schedules { get; set; }
 }
