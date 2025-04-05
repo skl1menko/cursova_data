@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BusManagmentSystem.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class CreateDataBase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -66,6 +66,28 @@ namespace BusManagmentSystem.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Stops", x => x.StopId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Username = table.Column<string>(type: "TEXT", nullable: false),
+                    Password = table.Column<string>(type: "TEXT", nullable: false),
+                    Role = table.Column<string>(type: "TEXT", nullable: false),
+                    DriverId = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.UserId);
+                    table.ForeignKey(
+                        name: "FK_Users_Drivers_DriverId",
+                        column: x => x.DriverId,
+                        principalTable: "Drivers",
+                        principalColumn: "DriverId",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -210,6 +232,11 @@ namespace BusManagmentSystem.Migrations
                 name: "IX_Trips_ScheduleId",
                 table: "Trips",
                 column: "ScheduleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_DriverId",
+                table: "Users",
+                column: "DriverId");
         }
 
         /// <inheritdoc />
@@ -220,6 +247,9 @@ namespace BusManagmentSystem.Migrations
 
             migrationBuilder.DropTable(
                 name: "RouteStops");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Trips");

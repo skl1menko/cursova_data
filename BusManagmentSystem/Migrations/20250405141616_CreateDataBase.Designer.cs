@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusManagmentSystem.Migrations
 {
     [DbContext(typeof(BusManagementContext))]
-    [Migration("20250403222702_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250405141616_CreateDataBase")]
+    partial class CreateDataBase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -191,6 +191,34 @@ namespace BusManagmentSystem.Migrations
                     b.ToTable("Trips");
                 });
 
+            modelBuilder.Entity("User", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("DriverId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId");
+
+                    b.HasIndex("DriverId");
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("Load", b =>
                 {
                     b.HasOne("Stop", "Stop")
@@ -265,6 +293,16 @@ namespace BusManagmentSystem.Migrations
                         .IsRequired();
 
                     b.Navigation("Schedule");
+                });
+
+            modelBuilder.Entity("User", b =>
+                {
+                    b.HasOne("Driver", "Driver")
+                        .WithMany()
+                        .HasForeignKey("DriverId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Driver");
                 });
 
             modelBuilder.Entity("Bus", b =>

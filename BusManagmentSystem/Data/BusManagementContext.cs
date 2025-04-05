@@ -16,6 +16,7 @@ public class BusManagementContext : DbContext
     public DbSet<Schedule> Schedules { get; set; }
     public DbSet<Trip> Trips { get; set; }
     public DbSet<Load> Loads { get; set; }
+    public DbSet<User> Users { get; set; }
 
     // Конфігурація зв'язків
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -66,5 +67,11 @@ public class BusManagementContext : DbContext
             .HasOne(l => l.Stop)
             .WithMany(s => s.Loads)
             .HasForeignKey(l => l.StopId);
+
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.Driver)
+            .WithMany()
+            .HasForeignKey(u => u.DriverId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }
