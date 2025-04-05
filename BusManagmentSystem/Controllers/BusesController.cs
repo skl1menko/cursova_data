@@ -27,5 +27,66 @@ namespace BusManagementSystem.Controllers
 
             return Ok(buses);
         }
+
+        // GET: api/Buses/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Bus>> GetBus(int id)
+        {
+            var bus = await _context.Buses.FindAsync(id);
+
+            if (bus == null)
+            {
+                return NotFound($"Bus with ID {id} not found.");
+            }
+
+            return Ok(bus);
+        }
+
+        //POST: api/Buses]
+        [HttpPost]
+        public async Task<ActionResult<Bus>> PostBus(Bus bus)
+        {
+            if (bus == null)
+            {
+                return BadRequest("Bus data is null.");
+            }
+
+            _context.Buses.Add(bus);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetBus", new { id = bus.BusId }, bus);
+        }
+
+        // PUT: api/Buses/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutBus(int id, Bus bus)
+        {
+            if (id != bus.BusId)
+            {
+                return BadRequest("Bus ID mismatch.");
+            }
+
+            _context.Entry(bus).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // DELETE: api/Buses/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBus(int id)
+        {
+            var bus = await _context.Buses.FindAsync(id);
+            if (bus == null)
+            {
+                return NotFound($"Bus with ID {id} not found.");
+            }
+
+            _context.Buses.Remove(bus);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }
