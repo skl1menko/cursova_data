@@ -1,6 +1,10 @@
 import '../PageStyles/AuthPage.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import InputGroup from '../components/AuthPageComp/InputGroup';
+import RoleSelector from '../components/AuthPageComp/RoleSelector';
+import ButtonContainer from '../components/AuthPageComp/ButtonContainer';
+import RegContainer from '../components/AuthPageComp/RegContainer';
 //import { getUser } from '../api/api.js'; // Імпорт функції для отримання користувачів
 
 const API_URL = "http://localhost:5227/api";
@@ -28,13 +32,13 @@ const AuthPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         if (isLogin) {
             // Находимо користувача по username та password
             const matchedUser = users.find(
                 (user) => user.username === username && user.password === password
             );
-    
+
             if (matchedUser) {
                 // Перенаправлення в залежності від ролі користувача
                 switch (matchedUser.role) {
@@ -63,7 +67,7 @@ const AuthPage = () => {
                 password,
                 role,
             };
-    
+
             try {
                 const response = await fetch(`${API_URL}/users/register`, {
                     method: 'POST',
@@ -72,7 +76,7 @@ const AuthPage = () => {
                     },
                     body: JSON.stringify(newUser),
                 });
-    
+
                 if (!response.ok) {
                     const errorMessage = await response.text();
                     alert(errorMessage);
@@ -85,64 +89,20 @@ const AuthPage = () => {
             }
         }
     };
-    
+
 
     return (
         <div className='auth-body'>
             <div className="matte-block">
                 <form className="auth-form" onSubmit={handleSubmit}>
                     <h1 className="auth-header">{isLogin ? 'Login' : 'Register'}</h1>
-                    <div className="input-group">
-                        <input
-                            className="input"
-                            type="text"
-                            required
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                        />
-                        <label className='input-label'>Username</label>
-                        <div className="underline"></div>
-                    </div>
-                    <div className="input-group">
-                        <input
-                            className="input"
-                            type="password"
-                            required
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                        <label className='input-label'>Password</label>
-                        <div className="underline"></div>
-                    </div>
-
+                    <InputGroup type="text" value={username} label="Username" onChange={setUsername} />
+                    <InputGroup type="password" value={password} label="Password" onChange={setPassword} />
                     {!isLogin && (
-                        <div className="select-menu">
-                            {['admin', 'dispatcher', 'user', 'driver'].map((r) => (
-                                <label className='radio' key={r}>
-                                    <input
-                                        type="radio"
-                                        name="radio"
-                                        value={r}
-                                        checked={role === r}
-                                        onChange={(e) => setRole(e.target.value)}
-                                    />
-                                    <span className="name">{r.charAt(0).toUpperCase() + r.slice(1)}</span>
-                                </label>
-                            ))}
-                        </div>
+                        <RoleSelector role={role} onChange={setRole} />
                     )}
-
-                    <div className='button-container'>
-                        <button className="auth-button" type="submit">
-                            {isLogin ? 'Login' : 'Register'}
-                        </button>
-                    </div>
-
-                    <div className="reg-container">
-                        <p onClick={() => setIsLogin(!isLogin)} className="toggle-link">
-                            {isLogin ? "Don't have an account? Register" : "Already have an account? Login"}
-                        </p>
-                    </div>
+                    <ButtonContainer isLogin={isLogin} />
+                    <RegContainer isLogin={isLogin} onClick={() => setIsLogin(!isLogin)} />
                 </form>
             </div>
         </div>

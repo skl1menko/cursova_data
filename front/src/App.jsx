@@ -16,6 +16,7 @@ function App() {
                 <Route path="/driver-info" element={<DriverInfo />} />
             </Routes>
         </Router>
+        
     );
 }
 
