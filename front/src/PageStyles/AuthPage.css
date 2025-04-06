@@ -1,0 +1,204 @@
+.auth-body {
+    width: 100vw;
+    height: 100vh;
+    background-image: url(../img/bus-retro-56.jpg);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.matte-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-form {
+    width: 600px;
+    height: 700px;
+    background: rgba(255, 255, 255, 0);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-group {
+    position: relative;
+    margin: 50px auto;
+    width: 250px;
+    transform: scale(1.2);
+}
+
+.input {
+    font-size: 16px;
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    padding: 5px 0;
+    background-color: transparent;
+    outline: none;
+}
+
+.input-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #ffffff;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.input:focus~.input-label,
+.input:valid~.input-label {
+    top: -20px;
+    font-size: 16px;
+    color: #ffffff;
+}
+
+.underline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background-color: #aa049c;
+    transform: scaleX(0);
+    transition: all 0.3s ease;
+}
+
+.input:focus~.underline,
+.input:valid~.underline {
+    transform: scaleX(1);
+}
+
+.select-menu {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 0.5rem;
+    background-color: #EEE;
+    box-sizing: border-box;
+    box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
+    padding: 0.25rem;
+    width: 300px;
+    font-size: 14px;
+}
+
+.radio {
+    flex: 1 1 auto;
+    text-align: center;
+}
+
+.radio input {
+    display: none;
+}
+
+.name {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    border: none;
+    padding: .5rem 0;
+    color: rgba(51, 65, 85, 1);
+}
+
+.radio input:checked+.name {
+    background-color: #fff;
+    font-weight: 600;
+    border: 1px solid #aa049c;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.auth-button {
+    --color: #ffffff;
+    padding: 0.8em 1.7em;
+    background-color: transparent;
+    border-radius: .3em;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: .5s;
+    font-weight: 400;
+    font-size: 17px;
+    border: 1px solid;
+    font-family: inherit;
+    text-transform: uppercase;
+    z-index: 1;
+    outline: none;
+    box-shadow: none;
+    border: #aa049c solid 3px;
+
+}
+
+.auth-button::before,
+.auth-button::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 50px;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    border-radius: 50%;
+    z-index: -1;
+    background-color: #aa049c;
+    transition: 1s ease;
+    outline: none;
+    box-shadow: none;
+    
+}
+
+.auth-button::before {
+    top: -1em;
+    left: -1em;
+    outline: none;
+    box-shadow: none;
+    
+}
+
+.auth-button::after {
+    left: calc(100% + 1em);
+    top: calc(100% + 1em);
+    outline: none;
+    box-shadow: none;
+    
+}
+
+.auth-button:hover::before,
+.auth-button:hover::after {
+    height: 410px;
+    width: 410px;
+    outline: none;
+    box-shadow: none;
+
+    
+}
+
+.auth-button:active {
+    filter: brightness(.8);
+    outline: none;
+    box-shadow: none;
+    border: #ffffff solid 1px;
+}
+
+.auth-button:hover {
+    outline: none;
+    box-shadow: none;
+    border: #aa049c solid 3px;
+}
+

@@ -1,10 +1,10 @@
-import React from "react"; // Імпортуємо компонент BusList
-import BusList from "./components/BusList";
+import React from "react";
+import AuthPage from "./pages/AuthPage";
 
 function App() {
   return (
     <div className="App">
-      <BusList /> 
+      <AuthPage />
     </div>
   );
 }
