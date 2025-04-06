@@ -91,5 +91,23 @@ namespace BusManagementSystem.Controllers
 
             return NoContent();
         }
+
+        // POST: api/users/register
+        [HttpPost("register")]
+        public async Task<ActionResult<User>> RegisterUser(User user)
+        {
+            // Перевірка наявності користувача з таким самим ім'ям
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == user.Username);
+            if (existingUser != null)
+            {
+                return BadRequest("Username already exists.");
+            }
+
+            // Додаємо нового користувача в базу
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetUser), new { id = user.UserId }, user);
+        }
     }
 }

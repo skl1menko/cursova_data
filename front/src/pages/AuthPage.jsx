@@ -1,13 +1,14 @@
 import '../PageStyles/AuthPage.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+//import { getUser } from '../api/api.js'; // Імпорт функції для отримання користувачів
 
-const API_URL = "http://localhost:5227/api/users";
+const API_URL = "http://localhost:5227/api";
 
 export const getUser = async () => {
-    const response = await fetch(API_URL);
+    const response = await fetch(`${API_URL}/users`);
     return response.json();
-};
+}
 
 const AuthPage = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -25,17 +26,17 @@ const AuthPage = () => {
         fetchUsers();
     }, []);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         if (isLogin) {
-            // Находим пользователя по username и password
+            // Находимо користувача по username та password
             const matchedUser = users.find(
                 (user) => user.username === username && user.password === password
             );
-
+    
             if (matchedUser) {
-                // Перенаправление в зависимости от роли пользователя
+                // Перенаправлення в залежності від ролі користувача
                 switch (matchedUser.role) {
                     case 'admin':
                         navigate('/admin-dashboard');
@@ -56,11 +57,35 @@ const AuthPage = () => {
                 alert('Invalid credentials');
             }
         } else {
-            // Логика для регистрации
-            alert(`Registered as ${role}`);
-            setIsLogin(true); // Возврат в форму логина
+            // Логіка для реєстрації
+            const newUser = {
+                username,
+                password,
+                role,
+            };
+    
+            try {
+                const response = await fetch(`${API_URL}/users/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(newUser),
+                });
+    
+                if (!response.ok) {
+                    const errorMessage = await response.text();
+                    alert(errorMessage);
+                } else {
+                    alert('Registration successful');
+                    setIsLogin(true); // Повернутися до форми входу
+                }
+            } catch (error) {
+                alert('Error during registration');
+            }
         }
     };
+    
 
     return (
         <div className='auth-body'>
