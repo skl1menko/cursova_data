@@ -1,11 +1,12 @@
 {
   "Version": 1,
-  "Hash": "ccQKJgHZl8aDM1ngIjyVwy/PX3+WZ2UgEc/j+0AAJHo=",
+  "Hash": "rVCpgHtKmx7Q0m5WgMvpwdGTd4kSqDaNyuV3TUtFZcQ=",
   "Source": "BusManagmentSystem",
   "BasePath": "_content/BusManagmentSystem",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [],
-  "Assets": []
+  "Assets": [],
+  "Endpoints": []
 }

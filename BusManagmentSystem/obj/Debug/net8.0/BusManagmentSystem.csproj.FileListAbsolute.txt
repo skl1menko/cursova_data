@@ -151,10 +151,13 @@ E:\cursova_data\BusManagmentSystem\obj\Debug\net8.0\staticwebassets\msbuild.buil
 E:\cursova_data\BusManagmentSystem\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.BusManagmentSystem.props
 E:\cursova_data\BusManagmentSystem\obj\Debug\net8.0\staticwebassets.pack.json
 E:\cursova_data\BusManagmentSystem\obj\Debug\net8.0\scopedcss\bundle\BusManagmentSystem.styles.css
-E:\cursova_data\BusManagmentSystem\obj\Debug\net8.0\BusManagmentSystem.csproj.CopyComplete
 E:\cursova_data\BusManagmentSystem\obj\Debug\net8.0\BusManagmentSystem.dll
 E:\cursova_data\BusManagmentSystem\obj\Debug\net8.0\refint\BusManagmentSystem.dll
 E:\cursova_data\BusManagmentSystem\obj\Debug\net8.0\BusManagmentSystem.pdb
 E:\cursova_data\BusManagmentSystem\obj\Debug\net8.0\BusManagmentSystem.genruntimeconfig.cache
 E:\cursova_data\BusManagmentSystem\obj\Debug\net8.0\ref\BusManagmentSystem.dll
 E:\cursova_data\BusManagmentSystem\obj\Debug\net8.0\BusManagmentSystem.sourcelink.json
+E:\cursova_data\BusManagmentSystem\bin\Debug\net8.0\BusManagmentSystem.staticwebassets.endpoints.json
+E:\cursova_data\BusManagmentSystem\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+E:\cursova_data\BusManagmentSystem\obj\Debug\net8.0\staticwebassets\msbuild.BusManagmentSystem.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+E:\cursova_data\BusManagmentSystem\obj\Debug\net8.0\BusManag.CFF0C5C3.Up2Date
