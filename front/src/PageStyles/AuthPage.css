@@ -10,6 +10,24 @@
     align-items: center;
 }
 
+.auth-header {
+    font-size: 2rem;
+    color: white;
+    margin-bottom: 1rem;
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: fadeSlideIn 0.4s ease forwards;
+}
+
+/* Анімація */
+@keyframes fadeSlideIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
 .matte-block {
     display: flex;
     flex-direction: column;
@@ -81,7 +99,7 @@
 .select-menu {
     position: relative;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     border-radius: 0.5rem;
     background-color: #EEE;
     box-sizing: border-box;
@@ -89,11 +107,32 @@
     padding: 0.25rem;
     width: 300px;
     font-size: 14px;
+    overflow: hidden;
+}
+
+.select-menu::before {
+    content: "";
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    width: calc(50% - 0.25rem); /* Half of container - padding */
+    background-color: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 0 1px #aa049c inset;
+    transform: translateX(0%);
+    transition: transform 0.3s ease;
+    z-index: 0;
+}
+
+.select-menu.role-user::before {
+    transform: translateX(100%);
 }
 
 .radio {
-    flex: 1 1 auto;
+    flex: 1 1 50%;
     text-align: center;
+    position: relative;
+    z-index: 1;
 }
 
 .radio input {
@@ -109,13 +148,14 @@
     border: none;
     padding: .5rem 0;
     color: rgba(51, 65, 85, 1);
+    transition: color 0.3s ease, font-weight 0.3s ease;
 }
 
 .radio input:checked+.name {
-    background-color: #fff;
     font-weight: 600;
-    border: 1px solid #aa049c;
+    color: #aa049c;
 }
+
 
 .button-container {
     display: flex;
@@ -123,6 +163,7 @@
     align-items: center;
     flex-direction: column;
     margin-top: 20px;
+    
 }
 
 .auth-button {
@@ -202,3 +243,38 @@
     border: #aa049c solid 3px;
 }
 
+.auth-button span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeTextIn 0.3s forwards;
+  }
+  
+  @keyframes fadeTextIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+
+.reg-container{
+    display: flex;
+    margin-top: 32px;
+}
+.role-selector-wrapper {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, opacity 0.5s ease;
+    will-change: opacity, max-height;
+    pointer-events: none; /* запобігає фокусуванню при прихованому стані */
+}
+
+.role-selector-wrapper.visible {
+    
+    max-height: 200px; /* достатньо для RoleSelector */
+    opacity: 1;
+    pointer-events: auto;
+    transition: max-height 0.5s ease, opacity 0.5s ease;
+}

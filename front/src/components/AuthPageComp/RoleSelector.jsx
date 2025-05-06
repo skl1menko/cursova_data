@@ -1,8 +1,10 @@
+import React from 'react';
+
 const RoleSelector = ({ role, onChange }) => {
-    const roles = ['admin', 'dispatcher', 'user', 'driver'];
+    const roles = ['admin', 'user'];
 
     return (
-        <div className="select-menu">
+        <div className={`select-menu role-${role}`}>
             {roles.map((r) => (
                 <label className="radio" key={r}>
                     <input

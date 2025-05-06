@@ -1,43 +1,42 @@
-import { Sidebar, SidebarCollapse, SidebarItem, SidebarItemGroup, SidebarItems } from "flowbite-react";
-import { FaBus } from "react-icons/fa";
-import { GiSteeringWheel } from "react-icons/gi";
-import { LiaRouteSolid } from "react-icons/lia";
-import { RiCalendarScheduleLine } from "react-icons/ri";
+import { FaBus,FaBars } from "react-icons/fa";
 import { useNavigate } from 'react-router';
+import { useState } from 'react';
 import '../components/SideBar.css';
-const SideBar = () => {
 
+const SideBar = () => {
     const navigate = useNavigate();
+    const [collapsed, setCollapsed] = useState(false);
+
+    const toggleSidebar = () => setCollapsed(prev => !prev);
 
     return (
-        <div className="flex items-center bg-black">
-            <div className="sd-ct bg-black">
-                <Sidebar color="white" className="">
-                    <SidebarItems className="">
-                        <SidebarItemGroup >
-                            <SidebarItem color="black" icon={FaBus} onClick={() => navigate('/admin-dashboard')}>
-                                Buses
-                            </SidebarItem>
-                            <SidebarItem  icon={GiSteeringWheel} onClick={() => navigate('/dispatcher-panel')}>
-                                Drivers
-                            </SidebarItem>
-                            <SidebarItem icon={LiaRouteSolid}>
-                                Routes and Stops
-                            </SidebarItem>
-                            <SidebarItem icon={RiCalendarScheduleLine}>
-                                Schedule
-                            </SidebarItem>
-                            <SidebarItem >
-                                Trips
-                            </SidebarItem>
-                            <SidebarItem >
-                                Load
-                            </SidebarItem>
-                        </SidebarItemGroup>
-                    </SidebarItems>
-                </Sidebar>
+        <div className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
+            <div className="sidebar-header">
+                <button className="toggle-btn" onClick={toggleSidebar}>
+                    <FaBars />
+                </button>
+                {!collapsed && <h2 className="sidebar-title">Buss Info</h2>}
             </div>
+            <div className="sidebar-nav-container">
+                <nav className="sidebar-nav">
+                    <SidebarItem
+                        icon={<FaBus  className="sidebar-icon highlight-icon" />}
+                        text="Buss"
+                        collapsed={collapsed}
+                        onClick={() => navigate('/admin-dashboard')}
+                    />
+                </nav>
+            </div>
+
         </div>
-    )
-}
+    );
+};
+
+const SidebarItem = ({ icon, text, collapsed, onClick }) => (
+    <div className="sidebar-item" onClick={onClick}>
+        {icon}
+        <span className={`sidebar-text ${collapsed ? 'hidden' : ''}`}>{text}</span>
+    </div>
+);
+
 export default SideBar;

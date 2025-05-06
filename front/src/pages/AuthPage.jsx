@@ -95,13 +95,16 @@ const AuthPage = () => {
         <div className='auth-body'>
             <div className="matte-block">
                 <form className="auth-form" onSubmit={handleSubmit}>
-                    <h1 className="auth-header">{isLogin ? 'Login' : 'Register'}</h1>
+                    <h1 className="auth-header" key={isLogin ? 'login' : 'register'}>
+                        {isLogin ? 'Login' : 'Register'}
+                    </h1>
                     <InputGroup type="text" value={username} label="Username" onChange={setUsername} />
                     <InputGroup type="password" value={password} label="Password" onChange={setPassword} />
-                    {!isLogin && (
+                    <div className={`role-selector-wrapper ${!isLogin ? 'visible' : ''}`}>
                         <RoleSelector role={role} onChange={setRole} />
-                    )}
-                    <ButtonContainer isLogin={isLogin} />
+                    </div>
+
+                    <ButtonContainer key={isLogin ? 'login-btn' : 'register-btn'} isLogin={isLogin} />
                     <RegContainer isLogin={isLogin} onClick={() => setIsLogin(!isLogin)} />
                 </form>
             </div>
