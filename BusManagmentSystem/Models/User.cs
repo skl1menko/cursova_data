@@ -9,11 +9,5 @@ using System.ComponentModel.DataAnnotations.Schema;
         public string Password { get; set; }
 
         public string Role { get; set; }
-
-        // Зовнішній ключ до водія
-        public int? DriverId { get; set; }
-
-        [ForeignKey("DriverId")]
-        public Driver? Driver { get; set; }
     }
 

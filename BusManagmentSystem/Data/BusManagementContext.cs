@@ -68,10 +68,5 @@ public class BusManagementContext : DbContext
             .WithMany(s => s.Loads)
             .HasForeignKey(l => l.StopId);
 
-        modelBuilder.Entity<User>()
-            .HasOne(u => u.Driver)
-            .WithMany()
-            .HasForeignKey(u => u.DriverId)
-            .OnDelete(DeleteBehavior.SetNull);
     }
 }

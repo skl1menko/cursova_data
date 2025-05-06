@@ -34,7 +34,7 @@ namespace BusManagmentSystem.Migrations
 
                     b.HasKey("BusId");
 
-                    b.ToTable("Buses");
+                    b.ToTable("Buses", (string)null);
                 });
 
             modelBuilder.Entity("Driver", b =>
@@ -56,7 +56,7 @@ namespace BusManagmentSystem.Migrations
 
                     b.HasKey("DriverId");
 
-                    b.ToTable("Drivers");
+                    b.ToTable("Drivers", (string)null);
                 });
 
             modelBuilder.Entity("Load", b =>
@@ -83,7 +83,7 @@ namespace BusManagmentSystem.Migrations
 
                     b.HasIndex("TripId");
 
-                    b.ToTable("Loads");
+                    b.ToTable("Loads", (string)null);
                 });
 
             modelBuilder.Entity("Route", b =>
@@ -101,7 +101,7 @@ namespace BusManagmentSystem.Migrations
 
                     b.HasKey("RouteId");
 
-                    b.ToTable("Routes");
+                    b.ToTable("Routes", (string)null);
                 });
 
             modelBuilder.Entity("RouteStops", b =>
@@ -119,7 +119,7 @@ namespace BusManagmentSystem.Migrations
 
                     b.HasIndex("StopId");
 
-                    b.ToTable("RouteStops");
+                    b.ToTable("RouteStops", (string)null);
                 });
 
             modelBuilder.Entity("Schedule", b =>
@@ -148,7 +148,7 @@ namespace BusManagmentSystem.Migrations
 
                     b.HasIndex("RouteId");
 
-                    b.ToTable("Schedules");
+                    b.ToTable("Schedules", (string)null);
                 });
 
             modelBuilder.Entity("Stop", b =>
@@ -163,7 +163,7 @@ namespace BusManagmentSystem.Migrations
 
                     b.HasKey("StopId");
 
-                    b.ToTable("Stops");
+                    b.ToTable("Stops", (string)null);
                 });
 
             modelBuilder.Entity("Trip", b =>
@@ -185,7 +185,7 @@ namespace BusManagmentSystem.Migrations
 
                     b.HasIndex("ScheduleId");
 
-                    b.ToTable("Trips");
+                    b.ToTable("Trips", (string)null);
                 });
 
             modelBuilder.Entity("User", b =>
@@ -213,7 +213,7 @@ namespace BusManagmentSystem.Migrations
 
                     b.HasIndex("DriverId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Load", b =>

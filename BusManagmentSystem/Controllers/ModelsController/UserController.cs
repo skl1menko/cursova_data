@@ -18,15 +18,14 @@ namespace BusManagementSystem.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            return await _context.Users.Include(u => u.Driver).ToListAsync();
+            return await _context.Users.ToListAsync();
         }
 
         // GET: api/users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            var user = await _context.Users.Include(u => u.Driver)
-                                           .FirstOrDefaultAsync(u => u.UserId == id);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == id);
 
             if (user == null)
             {
