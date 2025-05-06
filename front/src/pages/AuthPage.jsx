@@ -1,3 +1,4 @@
+// src/pages/AuthPage.js
 import '../PageStyles/AuthPage.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -5,14 +6,7 @@ import InputGroup from '../components/AuthPageComp/InputGroup';
 import RoleSelector from '../components/AuthPageComp/RoleSelector';
 import ButtonContainer from '../components/AuthPageComp/ButtonContainer';
 import RegContainer from '../components/AuthPageComp/RegContainer';
-//import { getUser } from '../api/api.js'; // Імпорт функції для отримання користувачів
-
-const API_URL = "http://localhost:5227/api";
-
-export const getUser = async () => {
-    const response = await fetch(`${API_URL}/users`);
-    return response.json();
-}
+import { getUser, registerUser } from '../api/user_api.js';  // Импортируем функции из api.js
 
 const AuthPage = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -24,8 +18,12 @@ const AuthPage = () => {
 
     useEffect(() => {
         const fetchUsers = async () => {
-            const usersData = await getUser();
-            setUsers(usersData);
+            try {
+                const usersData = await getUser();
+                setUsers(usersData);
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
         };
         fetchUsers();
     }, []);
@@ -34,13 +32,11 @@ const AuthPage = () => {
         e.preventDefault();
 
         if (isLogin) {
-            // Находимо користувача по username та password
             const matchedUser = users.find(
                 (user) => user.username === username && user.password === password
             );
 
             if (matchedUser) {
-                // Перенаправлення в залежності від ролі користувача
                 switch (matchedUser.role) {
                     case 'admin':
                         navigate('/admin-dashboard');
@@ -61,35 +57,17 @@ const AuthPage = () => {
                 alert('Invalid credentials');
             }
         } else {
-            // Логіка для реєстрації
-            const newUser = {
-                username,
-                password,
-                role,
-            };
+            const newUser = { username, password, role };
 
             try {
-                const response = await fetch(`${API_URL}/users/register`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(newUser),
-                });
-
-                if (!response.ok) {
-                    const errorMessage = await response.text();
-                    alert(errorMessage);
-                } else {
-                    alert('Registration successful');
-                    setIsLogin(true); // Повернутися до форми входу
-                }
+                await registerUser(newUser);  // Используем функцию регистрации из api.js
+                alert('Registration successful');
+                setIsLogin(true);
             } catch (error) {
-                alert('Error during registration');
+                alert(`Error during registration: ${error.message}`);
             }
         }
     };
-
 
     return (
         <div className='auth-body'>
