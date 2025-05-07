@@ -1,5 +1,5 @@
 import React from 'react';
-
+import '../AuthPageComp/RoleSelector.css'
 const RoleSelector = ({ role, onChange }) => {
     const roles = ['admin', 'user'];
 

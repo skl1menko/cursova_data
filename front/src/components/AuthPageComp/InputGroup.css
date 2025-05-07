@@ -1,0 +1,48 @@
+.input-group {
+    position: relative;
+    margin: 50px auto;
+    width: 250px;
+    transform: scale(1.2);
+}
+
+.input {
+    font-size: 16px;
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    padding: 5px 0;
+    background-color: transparent;
+    outline: none;
+}
+
+.input-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #ffffff;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.input:focus~.input-label,
+.input:valid~.input-label {
+    top: -20px;
+    font-size: 16px;
+    color: #ffffff;
+}
+
+.underline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background-color: #aa049c;
+    transform: scaleX(0);
+    transition: all 0.3s ease;
+}
+
+.input:focus~.underline,
+.input:valid~.underline {
+    transform: scaleX(1);
+}

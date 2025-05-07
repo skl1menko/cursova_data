@@ -1,3 +1,5 @@
+import '../AuthPageComp/ButtonContainer.css'
+
 const ButtonContainer = ({ isLogin }) => {
     return (
       <div className="button-container">

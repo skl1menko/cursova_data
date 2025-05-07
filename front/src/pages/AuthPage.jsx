@@ -1,5 +1,5 @@
 // src/pages/AuthPage.js
-import '../PageStyles/AuthPage.css';
+import '../pages/AuthPage.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import InputGroup from '../components/AuthPageComp/InputGroup';

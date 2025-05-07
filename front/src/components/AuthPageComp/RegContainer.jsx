@@ -1,3 +1,5 @@
+import '../AuthPageComp/RegContainer.css'
+
 const RegContainer = ({ isLogin, onClick }) => {
     return (
         <div className="reg-container">

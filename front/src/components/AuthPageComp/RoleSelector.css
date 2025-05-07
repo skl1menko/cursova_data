@@ -1,0 +1,60 @@
+
+.select-menu {
+    position: relative;
+    display: flex;
+    flex-wrap: nowrap;
+    border-radius: 0.5rem;
+    background-color: #EEE;
+    box-sizing: border-box;
+    box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
+    padding: 0.25rem;
+    width: 300px;
+    font-size: 14px;
+    overflow: hidden;
+}
+
+.select-menu::before {
+    content: "";
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    width: calc(50% - 0.25rem); /* Half of container - padding */
+    background-color: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 0 1px #aa049c inset;
+    transform: translateX(0%);
+    transition: transform 0.3s ease;
+    z-index: 0;
+}
+
+.select-menu.role-user::before {
+    transform: translateX(100%);
+}
+
+.radio {
+    flex: 1 1 50%;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.radio input {
+    display: none;
+}
+
+.name {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    border: none;
+    padding: .5rem 0;
+    color: rgba(51, 65, 85, 1);
+    transition: color 0.3s ease, font-weight 0.3s ease;
+}
+
+.radio input:checked+.name {
+    font-weight: 600;
+    color: #aa049c;
+}

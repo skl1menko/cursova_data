@@ -1,5 +1,5 @@
 import React from 'react';
-
+import '../AuthPageComp/InputGroup.css'
 const InputGroup = ({type , value, label, onChange}) => {
     return (
         <div className="input-group">
