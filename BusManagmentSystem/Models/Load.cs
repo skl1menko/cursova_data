@@ -7,5 +7,4 @@ public class Load
     public int Alighting { get; set; }
 
     public virtual Trip Trip { get; set; }
-    public virtual Stop Stop { get; set; }
 }

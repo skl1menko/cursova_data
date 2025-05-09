@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusManagmentSystem.Migrations
 {
     [DbContext(typeof(BusManagementContext))]
-    [Migration("20250405141616_CreateDataBase")]
-    partial class CreateDataBase
+    [Migration("20250509103356_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,47 +82,9 @@ namespace BusManagmentSystem.Migrations
 
                     b.HasKey("LoadId");
 
-                    b.HasIndex("StopId");
-
                     b.HasIndex("TripId");
 
                     b.ToTable("Loads");
-                });
-
-            modelBuilder.Entity("Route", b =>
-                {
-                    b.Property<int>("RouteId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<float>("Distance")
-                        .HasColumnType("REAL");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("RouteId");
-
-                    b.ToTable("Routes");
-                });
-
-            modelBuilder.Entity("RouteStops", b =>
-                {
-                    b.Property<int>("RouteId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("StopId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Sequence")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("RouteId", "StopId");
-
-                    b.HasIndex("StopId");
-
-                    b.ToTable("RouteStops");
                 });
 
             modelBuilder.Entity("Schedule", b =>
@@ -140,33 +102,13 @@ namespace BusManagmentSystem.Migrations
                     b.Property<int>("DriverId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("RouteId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("ScheduleId");
 
                     b.HasIndex("BusId");
 
                     b.HasIndex("DriverId");
 
-                    b.HasIndex("RouteId");
-
                     b.ToTable("Schedules");
-                });
-
-            modelBuilder.Entity("Stop", b =>
-                {
-                    b.Property<int>("StopId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("StopId");
-
-                    b.ToTable("Stops");
                 });
 
             modelBuilder.Entity("Trip", b =>
@@ -197,9 +139,6 @@ namespace BusManagmentSystem.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("DriverId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -214,47 +153,18 @@ namespace BusManagmentSystem.Migrations
 
                     b.HasKey("UserId");
 
-                    b.HasIndex("DriverId");
-
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Load", b =>
                 {
-                    b.HasOne("Stop", "Stop")
-                        .WithMany("Loads")
-                        .HasForeignKey("StopId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Trip", "Trip")
                         .WithMany("Loads")
                         .HasForeignKey("TripId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Stop");
-
                     b.Navigation("Trip");
-                });
-
-            modelBuilder.Entity("RouteStops", b =>
-                {
-                    b.HasOne("Route", "Route")
-                        .WithMany("RouteStops")
-                        .HasForeignKey("RouteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Stop", "Stop")
-                        .WithMany("RouteStops")
-                        .HasForeignKey("StopId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Route");
-
-                    b.Navigation("Stop");
                 });
 
             modelBuilder.Entity("Schedule", b =>
@@ -271,17 +181,9 @@ namespace BusManagmentSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Route", "Route")
-                        .WithMany("Schedules")
-                        .HasForeignKey("RouteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Bus");
 
                     b.Navigation("Driver");
-
-                    b.Navigation("Route");
                 });
 
             modelBuilder.Entity("Trip", b =>
@@ -295,16 +197,6 @@ namespace BusManagmentSystem.Migrations
                     b.Navigation("Schedule");
                 });
 
-            modelBuilder.Entity("User", b =>
-                {
-                    b.HasOne("Driver", "Driver")
-                        .WithMany()
-                        .HasForeignKey("DriverId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Driver");
-                });
-
             modelBuilder.Entity("Bus", b =>
                 {
                     b.Navigation("Schedules");
@@ -315,23 +207,9 @@ namespace BusManagmentSystem.Migrations
                     b.Navigation("Schedules");
                 });
 
-            modelBuilder.Entity("Route", b =>
-                {
-                    b.Navigation("RouteStops");
-
-                    b.Navigation("Schedules");
-                });
-
             modelBuilder.Entity("Schedule", b =>
                 {
                     b.Navigation("Trips");
-                });
-
-            modelBuilder.Entity("Stop", b =>
-                {
-                    b.Navigation("Loads");
-
-                    b.Navigation("RouteStops");
                 });
 
             modelBuilder.Entity("Trip", b =>
