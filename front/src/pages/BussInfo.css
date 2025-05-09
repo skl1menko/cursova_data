@@ -1,0 +1,155 @@
+
+  
+  .buses-page {
+    max-width: 1000px;
+    width: 100%; /* Обеспечивает, чтобы страница могла адаптироваться */
+    padding: 2rem;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    color: black;
+    background-color: white; /* Добавьте фон, чтобы контент был видим */
+    border-radius: 8px; /* Закругление углов для красоты */
+    margin-top: 32px;
+  }
+  
+
+.buses-page h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+}
+
+.filter-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.filter-group input {
+    padding: 0.5rem;
+    font-size: 1rem;
+    flex: 1;
+}
+
+.addbut-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.button {
+    padding: 0.5rem 1rem;
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #1f6391;
+}
+
+.table-container {
+    margin-top: 1rem;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background-color: white;
+}
+
+.rounded-tr{
+    border-bottom: 1px solid #992d22;
+}
+
+th,
+td {
+    padding: 0.75rem;
+    text-align: left;
+}
+
+th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+td .button.delete {
+    background-color: #c0392b;
+}
+
+td .button.delete:hover {
+    background-color: #992d22;
+}
+
+.add-form {
+    margin-top: 2rem;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    border-radius: 6px;
+}
+
+.add-form h2 {
+    margin-bottom: 1rem;
+}
+
+.add-form input {
+    display: block;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.add-form .button {
+    display: inline-block;
+}
+
+/* Модальне вікно */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content input,
+.modal-content select {
+    display: block;
+    margin-bottom: 15px;
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.button.cancel {
+    background-color: #aaa;
+}
+
+.add-bus-button {
+    margin: 15px 0;
+}

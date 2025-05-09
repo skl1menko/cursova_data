@@ -1,5 +1,8 @@
 .sidebar {
-    height: 100vh;
+    position: fixed; /* Закрепляем Sidebar на экране */
+    top: 0;
+    left: 0;
+    height: 100vh; /* Чтобы он растягивался на всю высоту */
     width: 200px;
     background-color: #1f2937;
     color: white;

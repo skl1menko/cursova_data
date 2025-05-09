@@ -5,6 +5,7 @@ import DispatcherPanel from './pages/DispatcherPanel';
 import UserHome from './pages/UserHome';
 import DriverInfo from './pages/DriverInfo';
 import SideBar from './components/SideBar';
+import BussInfo from './pages/BussInfo';
 import { useEffect } from 'react';
 
 const AppWrapper = () => {
@@ -21,6 +22,7 @@ const AppWrapper = () => {
                     <Route path="/dispatcher-panel" element={<DispatcherPanel />} />
                     <Route path="/user-home" element={<UserHome />} />
                     <Route path="/driver-info" element={<DriverInfo />} />
+                    <Route path="/buss-info" element={<BussInfo/>}/>
                 </Routes>
             </div>
         </div>

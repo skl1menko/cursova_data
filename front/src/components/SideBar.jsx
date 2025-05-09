@@ -1,4 +1,4 @@
-import { FaBus,FaBars } from "react-icons/fa";
+import { FaBus, FaBars } from "react-icons/fa";
 import { useNavigate } from 'react-router';
 import { useState } from 'react';
 import '../components/SideBar.css';
@@ -10,25 +10,27 @@ const SideBar = () => {
     const toggleSidebar = () => setCollapsed(prev => !prev);
 
     return (
-        <div className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
-            <div className="sidebar-header">
-                <button className="toggle-btn" onClick={toggleSidebar}>
-                    <FaBars />
-                </button>
-                {!collapsed && <h2 className="sidebar-title">Buss Info</h2>}
+        <nav className="sidebar-cont">
+            <div className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
+                <div className="sidebar-header">
+                    <button className="toggle-btn" onClick={toggleSidebar}>
+                        <FaBars />
+                    </button>
+                    {!collapsed && <h2 className="sidebar-title">Buss Info</h2>}
+                </div>
+                <div className="sidebar-nav-container">
+                    <nav className="sidebar-nav">
+                        <SidebarItem
+                            icon={<FaBus className="sidebar-icon highlight-icon" />}
+                            text="Buss"
+                            collapsed={collapsed}
+                            onClick={() => navigate('/buss-info')}
+                        />
+                    </nav>
+                </div>
             </div>
-            <div className="sidebar-nav-container">
-                <nav className="sidebar-nav">
-                    <SidebarItem
-                        icon={<FaBus  className="sidebar-icon highlight-icon" />}
-                        text="Buss"
-                        collapsed={collapsed}
-                        onClick={() => navigate('/admin-dashboard')}
-                    />
-                </nav>
-            </div>
+        </nav>
 
-        </div>
     );
 };
 

@@ -57,7 +57,6 @@ namespace BusManagementSystem.Controllers
             return CreatedAtAction("GetBus", new { id = bus.BusId }, bus);
         }
 
-        // PUT: api/Buses/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutBus(int id, Bus bus)
         {
@@ -68,10 +67,25 @@ namespace BusManagementSystem.Controllers
 
             _context.Entry(bus).State = EntityState.Modified;
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Buses.Any(b => b.BusId == id))
+                {
+                    return NotFound($"Bus with ID {id} not found.");
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
-            return NoContent();
+            return Ok(bus); // <-- тепер повертається об'єкт
         }
+
 
         // DELETE: api/Buses/5
         [HttpDelete("{id}")]
@@ -88,5 +102,7 @@ namespace BusManagementSystem.Controllers
 
             return NoContent();
         }
+
+        
     }
 }
