@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "4823FdPZzaQ=",
+  "dgSpecHash": "P45swzmrk+8=",
   "success": true,
-  "projectFilePath": "E:\\cursova_data\\BusManagmentSystem\\BusManagmentSystem.csproj",
+  "projectFilePath": "E:\\22\\cursova_data\\BusManagmentSystem\\BusManagmentSystem.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\alkli\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\alkli\\.nuget\\packages\\microsoft.aspnetcore.openapi\\8.0.1\\microsoft.aspnetcore.openapi.8.0.1.nupkg.sha512",

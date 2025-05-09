@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\cursova_data\\BusManagmentSystem\\BusManagmentSystem.csproj": {}
+    "E:\\22\\cursova_data\\BusManagmentSystem\\BusManagmentSystem.csproj": {}
   },
   "projects": {
-    "E:\\cursova_data\\BusManagmentSystem\\BusManagmentSystem.csproj": {
+    "E:\\22\\cursova_data\\BusManagmentSystem\\BusManagmentSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\cursova_data\\BusManagmentSystem\\BusManagmentSystem.csproj",
+        "projectUniqueName": "E:\\22\\cursova_data\\BusManagmentSystem\\BusManagmentSystem.csproj",
         "projectName": "BusManagmentSystem",
-        "projectPath": "E:\\cursova_data\\BusManagmentSystem\\BusManagmentSystem.csproj",
+        "projectPath": "E:\\22\\cursova_data\\BusManagmentSystem\\BusManagmentSystem.csproj",
         "packagesPath": "C:\\Users\\alkli\\.nuget\\packages\\",
-        "outputPath": "E:\\cursova_data\\BusManagmentSystem\\obj\\",
+        "outputPath": "E:\\22\\cursova_data\\BusManagmentSystem\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\alkli\\AppData\\Roaming\\NuGet\\NuGet.Config"
