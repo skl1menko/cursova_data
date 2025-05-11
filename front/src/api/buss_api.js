@@ -1,72 +1,55 @@
-const API_BASE = "http://localhost:5227/api/buses";
+import axios from 'axios';
+
+const API_BASE = 'http://localhost:5227/api/buses';
 
 // GET: отримати список автобусів
 export const getBuss = async () => {
-    const response = await fetch(API_BASE);
-    if (!response.ok) {
-        throw new Error("Failed to fetch buses");
+    try {
+        const response = await axios.get(API_BASE);
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data || 'Failed to fetch buses');
     }
-    return response.json();
 };
 
 // POST: додати новий автобус
 export const addBus = async (bus) => {
-    const response = await fetch("http://localhost:5227/api/buses", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+    try {
+        const response = await axios.post(API_BASE, {
             ...bus,
-            Schedules: []  // Add an empty Schedules array or default schedules data
-        }),
-    });
-
-    if (!response.ok) {
-        const errorMessage = await response.json();
-        throw new Error(JSON.stringify(errorMessage));  // Updated error handling
+            Schedules: []  // Додати порожній масив Schedules або за замовчуванням
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error(JSON.stringify(error.response?.data || 'Failed to add bus'));
     }
-
-    return response.json();  // Return the bus object if successful
 };
-
-
 
 // DELETE: видалити автобус
 export const deleteBus = async (id) => {
-    const response = await fetch(`http://localhost:5227/api/buses/${id}`, {
-        method: 'DELETE',
-    });
-
-    if (!response.ok) {
-        const errorMessage = await response.json();
-        throw new Error(JSON.stringify(errorMessage));  // Updated error handling
+    try {
+        await axios.delete(`${API_BASE}/${id}`);
+    } catch (error) {
+        throw new Error(JSON.stringify(error.response?.data || `Failed to delete bus with ID ${id}`));
     }
 };
 
 // PUT: оновити дані автобуса
 export const updateBus = async (id, updatedBus) => {
-    const response = await fetch(`http://localhost:5227/api/buses/${id}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedBus),
-    });
-
-    if (!response.ok) {
-        const errorText = await response.text(); // plain text
-        throw new Error(errorText || "Unknown error during update.");
-    }
-
-    // Якщо відповідь порожня — не парсити JSON
     try {
-        return await response.json();
-    } catch {
-        return updatedBus; // або null, якщо хочете
+        const response = await axios.put(`${API_BASE}/${id}`, updatedBus);
+        return response.data || updatedBus;  // Якщо відповідь порожня — повертаємо вхідні дані
+    } catch (error) {
+        throw new Error(error.response?.data || `Failed to update bus with ID ${id}`);
     }
 };
 
-
-
-
+// GET: отримати детальну статистику автобуса за ID
+export const getBusStats = async (id) => {
+    try {
+        const response = await axios.get(`${API_BASE}/${id}/stats`);
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data || `Failed to fetch stats for bus with ID ${id}`);
+    }
+};

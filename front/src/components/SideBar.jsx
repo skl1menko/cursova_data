@@ -1,4 +1,5 @@
-import { FaBus, FaBars } from "react-icons/fa";
+import { FaBus, FaBars, FaRegAddressCard } from "react-icons/fa";
+import { GrMap } from "react-icons/gr";
 import { useNavigate } from 'react-router';
 import { useState } from 'react';
 import '../components/SideBar.css';
@@ -25,6 +26,18 @@ const SideBar = () => {
                             text="Buss"
                             collapsed={collapsed}
                             onClick={() => navigate('/buss-info')}
+                        />
+                        <SidebarItem
+                            icon={<FaRegAddressCard className="sidebar-icon highlight-icon" />}
+                            text="Driver"
+                            collapsed={collapsed}
+                            onClick={() => navigate('/driver-info')}
+                        />
+                        <SidebarItem
+                            icon={<GrMap className="sidebar-icon highlight-icon" />}
+                            text="Map"
+                            collapsed={collapsed}
+                            onClick={() => navigate('/map-page')}
                         />
                     </nav>
                 </div>

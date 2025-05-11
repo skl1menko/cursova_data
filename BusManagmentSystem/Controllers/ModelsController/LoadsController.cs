@@ -17,14 +17,18 @@ public class LoadsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Load>>> GetLoads()
     {
-        return await _context.Loads.ToListAsync();
+        return await _context.Loads
+        .Include(l => l.Trip)
+        .ToListAsync();
     }
 
     // GET: api/Loads/5
     [HttpGet("{id}")]
     public async Task<ActionResult<Load>> GetLoad(int id)
     {
-        var load = await _context.Loads.FindAsync(id);
+        var load = await _context.Loads
+        .Include(l => l.Trip)
+        .FirstOrDefaultAsync(l => l.LoadId == id);
 
         if (load == null)
         {

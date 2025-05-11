@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './BussInfo.css';
-import { getBuss, addBus, deleteBus, updateBus } from '../api/buss_api';
+import { getBuss, addBus, deleteBus, updateBus, getBusStats } from '../api/buss_api';
 
 const BussInfo = () => {
     const [buses, setBuses] = useState([]);
@@ -9,7 +9,10 @@ const BussInfo = () => {
     const [year, setYear] = useState('');
     const [filters, setFilters] = useState({ model: '', capacity: '', year: '' });
     const [showAddForm, setShowAddForm] = useState(false);
-    const [selectedBus, setSelectedBus] = useState(null); // нове
+    const [selectedBus, setSelectedBus] = useState(null);
+    const [selectedBusStats, setSelectedBusStats] = useState(null);
+    const [showStatsModal, setShowStatsModal] = useState(false);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -71,6 +74,19 @@ const BussInfo = () => {
         }
     };
 
+    const handleShowStats = async (busId) => {
+        try {
+            // Використовуємо getBusStats з API
+            const data = await getBusStats(busId);  
+            setSelectedBusStats(data);
+            setShowStatsModal(true);
+        } catch (error) {
+            console.error("Error fetching bus stats:", error);
+            alert("Помилка при завантаженні статистики.");
+        }
+    };
+        
+
     const filteredBuses = buses.filter(bus =>
         (filters.model === '' || bus.model.toLowerCase().includes(filters.model.toLowerCase())) &&
         (filters.capacity === '' || bus.capacity === parseInt(filters.capacity)) &&
@@ -125,7 +141,9 @@ const BussInfo = () => {
                                 <td>
                                     <button className="button" onClick={() => handleEditBus(bus)}>Редагувати</button>
                                     <button className="button delete" onClick={() => handleDelete(bus.busId)}>Видалити</button>
+                                    <button className="button stats" onClick={() => handleShowStats(bus.busId)}>📊 Статистика</button>
                                 </td>
+
                             </tr>
                         ))}
                         {filteredBuses.length === 0 && (
@@ -158,6 +176,34 @@ const BussInfo = () => {
                     </div>
                 </div>
             )}
+            {showStatsModal && selectedBusStats && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h2>Статистика автобуса №{selectedBusStats.busId}</h2>
+                        <ul>
+                            <li>Розкладів: {selectedBusStats.scheduleCount}</li>
+                            <li>Рейсів: {selectedBusStats.tripCount}</li>
+                            <li>Навантажень: {selectedBusStats.loadCount}</li>
+                            <li>Середня тривалість рейсу: {selectedBusStats.averageTripDurationMinutes} хв</li>
+                            <li>Загальна тривалість: {selectedBusStats.totalTripDurationMinutes} хв</li>
+                            <li>Унікальних днів поїздок: {selectedBusStats.uniqueTravelDays}</li>
+                            <li>
+                                Навантаження:
+                                <ul>
+                                    <li>Мінімум: {selectedBusStats.loadStats.min}</li>
+                                    <li>Максимум: {selectedBusStats.loadStats.max}</li>
+                                    <li>Середнє: {selectedBusStats.loadStats.average}</li>
+                                </ul>
+                            </li>
+                            <li>Час останнього рейсу: {new Date(selectedBusStats.lastTripTime).toLocaleString()}</li>
+                        </ul>
+                        <div className="modal-buttons">
+                            <button className="button cancel" onClick={() => setShowStatsModal(false)}>Закрити</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 };

@@ -35,6 +35,8 @@ body {
   min-height: 100vh;
   justify-content: center;
   align-items: center;
+  height: 100%;
+  width: 100%;
 }
 
 h1 {

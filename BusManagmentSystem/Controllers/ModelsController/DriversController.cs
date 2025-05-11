@@ -17,14 +17,18 @@ public class DriversController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Driver>>> GetDrivers()
     {
-        return await _context.Drivers.ToListAsync();
+        return await _context.Drivers
+        .Include(d => d.Schedules)
+        .ToListAsync();
     }
 
     // GET: api/Drivers/5
     [HttpGet("{id}")]
     public async Task<ActionResult<Driver>> GetDriver(int id)
     {
-        var driver = await _context.Drivers.FindAsync(id);
+        var driver = await _context.Drivers
+        .Include(d => d.Schedules)
+        .FirstOrDefaultAsync(d => d.DriverId == id);
 
         if (driver == null)
         {
@@ -74,4 +78,22 @@ public class DriversController : ControllerBase
 
         return NoContent();
     }
+
+    // GET: api/Drivers/5/Schedules
+    [HttpGet("{id}/Schedules")]
+    public async Task<ActionResult<IEnumerable<Schedule>>> GetDriverSchedules(int id)
+    {
+        var driver = await _context.Drivers
+            .Include(d => d.Schedules)
+            .FirstOrDefaultAsync(d => d.DriverId == id);
+
+        if (driver == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(driver.Schedules);
+    }
+
+
 }
