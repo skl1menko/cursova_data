@@ -1,54 +1,88 @@
-import React from 'react';
-import Map, { Source, Layer } from 'react-map-gl/mapbox';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import React, { useState } from 'react';
+import {
+    GoogleMap,
+    LoadScript,
+    DirectionsService,
+    DirectionsRenderer
+} from '@react-google-maps/api';
 import './MapPage.css';
 
-// GeoJSON с маршрутом по улицам Черкасс
-const cherkasyRoute = {
-    type: 'Feature',
-    geometry: {
-        type: 'LineString',
-        coordinates: [
-            [32.0594, 49.4444], // Центр Черкасс
-            [32.0640, 49.4452], // Улица 1
-            [32.0700, 49.4460], // Поворот
-            [32.0800, 49.4470], // Ещё один поворот
-            [32.0850, 49.4480]  // Конечная точка маршрута
-        ]
-    }
-};
-
-// Стиль линии
-const lineStyle = {
-    id: 'cherkasy-route',
-    type: 'line',
-    paint: {
-        'line-color': '#FF5733',
-        'line-width': 4
-    }
-};
+import { fetchRouteById } from '../api/route-api';
 
 const MapPage = () => {
+    const [directions, setDirections] = useState(null);
+    const [stops, setStops] = useState([]);
+    const [showRoute, setShowRoute] = useState(false);
+    const [routeRequested, setRouteRequested] = useState(false);
+
+    const handleLoadRoute = async () => {
+        if (showRoute) {
+            setDirections(null);
+            setStops([]);
+            setShowRoute(false);
+            setRouteRequested(false);
+            return;
+        }
+
+        try {
+            const data = await fetchRouteById(1); // можно позже заменить на динамический ID
+            const sortedStops = data.stops.sort((a, b) => a.stopOrder - b.stopOrder);
+            setStops(sortedStops);
+            setShowRoute(true);
+            setRouteRequested(false);
+        } catch (error) {
+            console.error('Failed to load route:', error);
+        }
+    };
+
+    const directionsCallback = (response) => {
+        if (response !== null) {
+            if (response.status === 'OK') {
+                setDirections(response);
+                setRouteRequested(true);
+            } else {
+                console.error('Directions request failed due to ' + response.status);
+            }
+        }
+    };
+
+    const origin = stops.length > 0 ? { lat: stops[0].latitude, lng: stops[0].longitude } : null;
+    const destination = stops.length > 1 ? { lat: stops[stops.length - 1].latitude, lng: stops[stops.length - 1].longitude } : null;
+    const waypoints = stops.slice(1, -1).map(stop => ({
+        location: { lat: stop.latitude, lng: stop.longitude },
+        stopover: true
+    }));
+
     return (
-        <div className="map-container" style={{ height: '100vh' }}>
-            <Map
-                mapboxAccessToken="pk.eyJ1Ijoic2tsMW1lbmtvIiwiYSI6ImNtYWpzZXZ3NTExOTgya3M3dzEwZmNpaTAifQ.8Hx2WumR1PB9ejb07UWagA"
-                initialViewState={{
-                    longitude: 32.0700,
-                    latitude: 49.4460,
-                    zoom: 13
-                }}
-                mapStyle="mapbox://styles/mapbox/streets-v9"
+        <div className="map-container">
+            <GoogleMap
+                className="map-f"
+                mapContainerStyle={{ marginRight: "-200px", width: '1550px', height: '100vh' }}
+                center={{ lat: 49.4460, lng: 32.0700 }}
+                zoom={13}
             >
-                <Source id="cherkasyRoute" type="geojson" data={cherkasyRoute}>
-                    <Layer {...lineStyle} />
-                </Source>
-            </Map>
+                <div className="mapbut-cont">
+                    <button className="route-num" onClick={handleLoadRoute}>21</button>
+                </div>
+
+                {showRoute && origin && destination && !routeRequested && (
+                    <DirectionsService
+                        options={{
+                            origin,
+                            destination,
+                            waypoints,
+                            travelMode: 'DRIVING'
+                        }}
+                        callback={directionsCallback}
+                    />
+                )}
+
+                {directions && (
+                    <DirectionsRenderer options={{ directions }} />
+                )}
+            </GoogleMap>
         </div>
     );
 };
 
 export default MapPage;
-
-
-https://api.eway.in.ua/?login=login&password=pass&function=routes.Search&city=donetsk&start_lat=48.03676802&start_lng=37.71427346&stop_lat=47.99128114&stop_lng=37.79573751&transports=bus,trol&format=xml

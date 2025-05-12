@@ -13,6 +13,8 @@ public class BusManagementContext : DbContext
     public DbSet<Trip> Trips { get; set; }
     public DbSet<Load> Loads { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<Route> Routes { get; set; }
+    public DbSet<Stop> Stops { get; set; }
 
     // Конфігурація зв'язків
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -38,6 +40,16 @@ public class BusManagementContext : DbContext
             .HasOne(l => l.Trip)
             .WithMany(t => t.Loads)
             .HasForeignKey(l => l.TripId);
+
+        modelBuilder.Entity<Route>()
+            .HasOne(r => r.Bus)
+            .WithMany(b => b.Routes)
+            .HasForeignKey(r => r.BusId);
+
+        modelBuilder.Entity<Stop>()
+            .HasOne(s => s.Route)
+            .WithMany(r => r.Stops)
+            .HasForeignKey(s => s.RouteId);
 
     }
 }
