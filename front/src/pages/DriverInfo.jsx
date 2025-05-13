@@ -112,6 +112,7 @@ const DriverInfo = () => {
                 <table>
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Ім'я</th>
                             <th>Досвід</th>
                             <th>Ліцензія</th>

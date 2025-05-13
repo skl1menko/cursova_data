@@ -10,9 +10,8 @@ const BussInfo = () => {
     const [filters, setFilters] = useState({ model: '', capacity: '', year: '' });
     const [showAddForm, setShowAddForm] = useState(false);
     const [selectedBus, setSelectedBus] = useState(null);
-    const [selectedBusStats, setSelectedBusStats] = useState(null);
-    const [showStatsModal, setShowStatsModal] = useState(false);
-
+    const [busStats, setBusStats] = useState(null); // Додано для статистики автобуса
+    const [showStats, setShowStats] = useState(false); // Стан для показу статистики
 
     useEffect(() => {
         const fetchData = async () => {
@@ -32,6 +31,7 @@ const BussInfo = () => {
         setYear('');
         setSelectedBus(null);
         setShowAddForm(false);
+        setShowStats(false); // Скидаємо стан статистики
     };
 
     const handleSaveBus = async () => {
@@ -74,18 +74,16 @@ const BussInfo = () => {
         }
     };
 
-    const handleShowStats = async (busId) => {
+    const handleShowStats = async (id) => {
         try {
-            // Використовуємо getBusStats з API
-            const data = await getBusStats(busId);  
-            setSelectedBusStats(data);
-            setShowStatsModal(true);
+            const stats = await getBusStats(id);
+            setBusStats(stats);
+            setShowStats(true);
         } catch (error) {
             console.error("Error fetching bus stats:", error);
-            alert("Помилка при завантаженні статистики.");
+            alert("Не вдалося отримати статистику для цього автобуса.");
         }
     };
-        
 
     const filteredBuses = buses.filter(bus =>
         (filters.model === '' || bus.model.toLowerCase().includes(filters.model.toLowerCase())) &&
@@ -126,6 +124,7 @@ const BussInfo = () => {
                 <table>
                     <thead>
                         <tr>
+                            <th>Buss Num</th>
                             <th>Модель</th>
                             <th>Кількість місць</th>
                             <th>Рік</th>
@@ -135,6 +134,7 @@ const BussInfo = () => {
                     <tbody>
                         {filteredBuses.map((bus) => (
                             <tr className="rounded-tr" key={bus.busId}>
+                                <td>{bus.busId}</td>
                                 <td>{bus.model}</td>
                                 <td>{bus.capacity}</td>
                                 <td>{bus.year}</td>
@@ -143,7 +143,6 @@ const BussInfo = () => {
                                     <button className="button delete" onClick={() => handleDelete(bus.busId)}>Видалити</button>
                                     <button className="button stats" onClick={() => handleShowStats(bus.busId)}>📊 Статистика</button>
                                 </td>
-
                             </tr>
                         ))}
                         {filteredBuses.length === 0 && (
@@ -176,33 +175,47 @@ const BussInfo = () => {
                     </div>
                 </div>
             )}
-            {showStatsModal && selectedBusStats && (
+
+            {/* Модальне вікно для статистики */}
+            {showStats && busStats && (
                 <div className="modal-overlay">
                     <div className="modal-content">
-                        <h2>Статистика автобуса №{selectedBusStats.busId}</h2>
-                        <ul>
-                            <li>Розкладів: {selectedBusStats.scheduleCount}</li>
-                            <li>Рейсів: {selectedBusStats.tripCount}</li>
-                            <li>Навантажень: {selectedBusStats.loadCount}</li>
-                            <li>Середня тривалість рейсу: {selectedBusStats.averageTripDurationMinutes} хв</li>
-                            <li>Загальна тривалість: {selectedBusStats.totalTripDurationMinutes} хв</li>
-                            <li>Унікальних днів поїздок: {selectedBusStats.uniqueTravelDays}</li>
-                            <li>
-                                Навантаження:
-                                <ul>
-                                    <li>Мінімум: {selectedBusStats.loadStats.min}</li>
-                                    <li>Максимум: {selectedBusStats.loadStats.max}</li>
-                                    <li>Середнє: {selectedBusStats.loadStats.average}</li>
-                                </ul>
-                            </li>
-                            <li>Час останнього рейсу: {new Date(selectedBusStats.lastTripTime).toLocaleString()}</li>
-                        </ul>
-                        <div className="modal-buttons">
-                            <button className="button cancel" onClick={() => setShowStatsModal(false)}>Закрити</button>
+                        <h2>Статистика автобуса</h2>
+                        <div className="bus-stats">
+                            <p><strong>Номер автобуса:</strong> {busStats.busId}</p>
+                            {busStats.routes && busStats.routes.length > 0 ? (
+                                <div>
+                                    <h3>Маршрути:</h3>
+                                    {busStats.routes.map((route, index) => (
+                                        <div key={index}>
+                                            <p><strong>Номер маршруту:</strong> {route.routeNumber}</p>
+                                            <p><strong>Кількість зупинок:</strong> {route.stopCount}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p>Маршрути не знайдені.</p>
+                            )}
+                            {busStats.schedules && busStats.schedules.length > 0 ? (
+                                <div>
+                                    <h3>Розклад:</h3>
+                                    {busStats.schedules.map((schedule, index) => (
+                                        <div key={index}>
+                                            <p><strong>Час першого відправлення:</strong> {schedule.firstDeparture}</p>
+                                            <p><strong>Час останнього відправлення:</strong> {schedule.lastDeparture}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p>Розклад не знайдено.</p>
+                            )}
                         </div>
+                        <button className="button cancel" onClick={resetForm}>Закрити</button>
                     </div>
                 </div>
             )}
+
+
 
         </div>
     );

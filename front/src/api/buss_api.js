@@ -44,7 +44,8 @@ export const updateBus = async (id, updatedBus) => {
     }
 };
 
-// GET: отримати детальну статистику автобуса за ID
+
+// GET: отримати статистику для конкретного автобуса
 export const getBusStats = async (id) => {
     try {
         const response = await axios.get(`${API_BASE}/${id}/stats`);

@@ -106,62 +106,41 @@ namespace BusManagementSystem.Controllers
 
             return NoContent();
         }
+
         // GET: api/Buses/5/stats
         [HttpGet("{id}/stats")]
-        public async Task<ActionResult<object>> GetDetailedBusStatistics(int id)
+        public async Task<ActionResult> GetBusStats(int id)
         {
-            var schedules = await _context.Schedules
-                .Where(s => s.BusId == id)
-                .Include(s => s.Trips)
-                    .ThenInclude(t => t.Loads)
-                .ToListAsync();
+            var busStats = await _context.Buses
+                .Where(b => b.BusId == id)
+                .Include(b => b.Schedules)
+                .Include(b => b.Routes)
+                    .ThenInclude(r => r.Stops)
+                .Select(b => new
+                {
+                    BusId = b.BusId,
+                    Routes = b.Routes.Select(r => new
+                    {
+                        RouteId = r.RouteId,
+                        RouteNumber = r.RouteNumber,
+                        StopCount = r.Stops.Count
+                    }),
+                    Schedules = b.Schedules.Select(s => new
+                    {
+                        ScheduleId = s.ScheduleId,
+                        FirstDeparture = s.FirstDepartureTime,
+                        LastDeparture = s.LastDepartureTime
+                    })
+                })
+                .FirstOrDefaultAsync();
 
-            if (!schedules.Any())
+            if (busStats == null)
             {
-                return NotFound($"No schedules found for bus with ID {id}.");
+                return NotFound($"Bus with ID {id} not found.");
             }
 
-            var trips = schedules.SelectMany(s => s.Trips).ToList();
-            var totalLoads = trips.SelectMany(t => t.Loads).Count();
-
-            var durations = trips
-                .Where(t => t.ActualDeparture.HasValue && t.ActualArrival.HasValue)
-                .Select(t => (t.ActualArrival.Value - t.ActualDeparture.Value).TotalMinutes)
-                .ToList();
-
-            var loadCounts = trips.Select(t => t.Loads.Count).ToList();
-
-            var tripDates = trips
-                .Where(t => t.ActualDeparture.HasValue)
-                .Select(t => t.ActualDeparture.Value.Date)
-                .Distinct()
-                .ToList();
-
-            var lastTrip = trips
-                .Where(t => t.ActualDeparture.HasValue)
-                .OrderByDescending(t => t.ActualDeparture)
-                .FirstOrDefault();
-
-            return Ok(new
-            {
-                BusId = id,
-                ScheduleCount = schedules.Count,
-                TripCount = trips.Count,
-                LoadCount = totalLoads,
-                AverageTripDurationMinutes = durations.Any() ? Math.Round(durations.Average(), 2) : 0,
-                TotalTripDurationMinutes = durations.Sum(),
-                UniqueTravelDays = tripDates.Count,
-                LoadStats = new
-                {
-                    Min = loadCounts.Any() ? loadCounts.Min() : 0,
-                    Max = loadCounts.Any() ? loadCounts.Max() : 0,
-                    Average = loadCounts.Any() ? Math.Round(loadCounts.Average(), 2) : 0
-                },
-                LastTripTime = lastTrip?.ActualDeparture
-            });
+            return Ok(busStats);
         }
-
-
 
 
     }
