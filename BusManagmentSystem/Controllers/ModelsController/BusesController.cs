@@ -177,9 +177,28 @@ namespace BusManagementSystem.Controllers
                 return NotFound($"Driver with ID {request.DriverId} not found.");
             }
 
+            // Check if the bus already has an active driver
+            var existingBusSchedule = await _context.Schedules
+                .FirstOrDefaultAsync(s => s.BusId == busId);
+
+            if (existingBusSchedule != null)
+            {
+                return BadRequest("This bus already has a driver assigned. Please remove the current driver before assigning a new one.");
+            }
+
+            // Check if the driver is already assigned to another bus
+            var existingDriverSchedule = await _context.Schedules
+                .FirstOrDefaultAsync(s => s.DriverId == request.DriverId);
+
+            if (existingDriverSchedule != null)
+            {
+                return BadRequest("This driver is already assigned to another bus. Please remove the driver from their current bus before assigning to a new one.");
+            }
+
             // Create a new schedule for the driver-bus assignment
             var schedule = new Schedule
             {
+                ScheduleId = busId,
                 BusId = busId,
                 DriverId = request.DriverId,
                 FirstDepartureTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
