@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './BussInfo.css';
-import { getBuss, addBus, deleteBus, updateBus, getBusStats, assignDriverToBus } from '../api/buss_api';
+import { getBuss, addBus, deleteBus, updateBus, getBusStats, assignDriverToBus, removeDriverFromBus } from '../api/buss_api';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
@@ -27,7 +27,22 @@ const BussInfo = () => {
                     getBuss(),
                     axios.get('http://localhost:5227/api/drivers')
                 ]);
-                setBuses(busesData);
+                // Завантажуємо статистику для кожного автобуса, щоб отримати інформацію про водіїв
+                const busesWithSchedules = await Promise.all(
+                    busesData.map(async (bus) => {
+                        try {
+                            const stats = await getBusStats(bus.busId);
+                            return {
+                                ...bus,
+                                Schedules: stats.schedules || []
+                            };
+                        } catch (error) {
+                            console.error(`Error fetching stats for bus ${bus.busId}:`, error);
+                            return bus;
+                        }
+                    })
+                );
+                setBuses(busesWithSchedules);
                 setDrivers(driversData.data);
             } catch (error) {
                 console.error(error);
@@ -113,22 +128,44 @@ const BussInfo = () => {
     };
 
     const handleAssignDriver = async (busId) => {
-        if (!selectedDriver) {
-            alert('Будь ласка, оберіть водія');
-            return;
-        }
-
         try {
-            const driverId = parseInt(selectedDriver);
-            if (isNaN(driverId)) {
-                alert('Невірний ID водія');
-                return;
-            }
+            if (!selectedDriver) {
+                // Якщо вибрано пусте значення, відкріплюємо водія
+                await removeDriverFromBus(busId);
+                alert('Водія успішно відкріплено від автобуса');
+            } else {
+                const driverId = parseInt(selectedDriver);
+                if (isNaN(driverId)) {
+                    alert('Невірний ID водія');
+                    return;
+                }
 
-            await assignDriverToBus(busId, driverId);
-            alert('Водія успішно призначено до автобуса');
+                await assignDriverToBus(busId, driverId);
+                alert('Водія успішно призначено до автобуса');
+            }
+            
             setShowAssignDriver(false);
             setSelectedDriver('');
+            
+            // Оновлюємо список автобусів
+            const updatedBuses = await Promise.all(
+                buses.map(async (bus) => {
+                    if (bus.busId === busId) {
+                        try {
+                            const stats = await getBusStats(busId);
+                            return {
+                                ...bus,
+                                Schedules: stats.schedules || []
+                            };
+                        } catch (error) {
+                            console.error(`Error fetching stats for bus ${busId}:`, error);
+                            return bus;
+                        }
+                    }
+                    return bus;
+                })
+            );
+            setBuses(updatedBuses);
             
             // Refresh bus stats if they are currently shown
             if (showStats && busStats && busStats.busId === busId) {
@@ -136,8 +173,55 @@ const BussInfo = () => {
                 setBusStats(stats);
             }
         } catch (error) {
-            console.error("Error assigning driver:", error);
-            alert('Помилка при призначенні водія: ' + (error.message || 'Невідома помилка'));
+            console.error("Error handling driver assignment:", error);
+            alert('Помилка: ' + (error.message || 'Невідома помилка'));
+        }
+    };
+
+    // Функція для отримання поточного водія автобуса
+    const getCurrentDriver = (bus) => {
+        if (bus.Schedules && bus.Schedules.length > 0) {
+            const schedule = bus.Schedules[0];
+            if (schedule.driver) {
+                return schedule.driver.driverId.toString();
+            }
+        }
+        return '';
+    };
+
+    const handleRemoveDriver = async (busId) => {
+        try {
+            await removeDriverFromBus(busId);
+            alert('Водія успішно відкріплено від автобуса');
+            
+            // Оновлюємо список автобусів
+            const updatedBuses = await Promise.all(
+                buses.map(async (bus) => {
+                    if (bus.busId === busId) {
+                        try {
+                            const stats = await getBusStats(busId);
+                            return {
+                                ...bus,
+                                Schedules: stats.schedules || []
+                            };
+                        } catch (error) {
+                            console.error(`Error fetching stats for bus ${busId}:`, error);
+                            return bus;
+                        }
+                    }
+                    return bus;
+                })
+            );
+            setBuses(updatedBuses);
+            
+            // Refresh bus stats if they are currently shown
+            if (showStats && busStats && busStats.busId === busId) {
+                const stats = await getBusStats(busId);
+                setBusStats(stats);
+            }
+        } catch (error) {
+            console.error("Error removing driver:", error);
+            alert('Помилка при відкріпленні водія: ' + (error.message || 'Невідома помилка'));
         }
     };
 
@@ -295,7 +379,7 @@ const BussInfo = () => {
                     <div className="modal-content">
                         <h2>Призначити водія до автобуса {selectedBus.busId}</h2>
                         <select 
-                            value={selectedDriver} 
+                            value={selectedDriver || getCurrentDriver(selectedBus)} 
                             onChange={(e) => setSelectedDriver(e.target.value)}
                             className="driver-select"
                         >
@@ -310,9 +394,8 @@ const BussInfo = () => {
                             <button 
                                 className="button" 
                                 onClick={() => handleAssignDriver(selectedBus.busId)}
-                                disabled={!selectedDriver}
                             >
-                                Призначити
+                                {selectedDriver || getCurrentDriver(selectedBus) ? 'Змінити водія' : 'Призначити'}
                             </button>
                             <button 
                                 className="button cancel" 

@@ -79,3 +79,13 @@ export const assignDriverToBus = async (busId, driverId) => {
     }
 };
 
+// DELETE: відкріпити водія від автобуса
+export const removeDriverFromBus = async (busId) => {
+    try {
+        const response = await axios.delete(`${API_BASE}/${busId}/remove-driver`);
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data || `Failed to remove driver from bus with ID ${busId}`);
+    }
+};
+

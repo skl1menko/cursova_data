@@ -216,5 +216,31 @@ namespace BusManagementSystem.Controllers
             public int DriverId { get; set; }
         }
 
+        // DELETE: api/Buses/5/remove-driver
+        [HttpDelete("{busId}/remove-driver")]
+        public async Task<IActionResult> RemoveDriverFromBus(int busId)
+        {
+            var bus = await _context.Buses
+                .Include(b => b.Schedules)
+                .FirstOrDefaultAsync(b => b.BusId == busId);
+
+            if (bus == null)
+            {
+                return NotFound($"Bus with ID {busId} not found.");
+            }
+
+            var schedule = await _context.Schedules
+                .FirstOrDefaultAsync(s => s.BusId == busId);
+
+            if (schedule == null)
+            {
+                return BadRequest("This bus doesn't have any driver assigned.");
+            }
+
+            _context.Schedules.Remove(schedule);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Driver successfully removed from bus" });
+        }
     }
 }
