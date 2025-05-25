@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './DriverInfo.css';
 import { getDrivers, addDriver, updateDriver, deleteDriver, getDriverAssignments } from '../api/driver_api';
-
+import DriverFilter from '../components/DriverInfoPage/DriverFilter';
+import AddDriverBut from '../components/DriverInfoPage/AddDriverBut';
+import DriverTable from '../components/DriverInfoPage/DriverTable';
+import AddDriverForm from '../components/DriverInfoPage/AddDriverForm';
+import DriverInfoForm from '../components/DriverInfoPage/DriverInfoForm';
 const DriverInfo = () => {
     const [drivers, setDrivers] = useState([]);
     const [name, setName] = useState('');
@@ -92,89 +96,20 @@ const DriverInfo = () => {
     return (
         <div className="drivers-page">
             <h1>Водії</h1>
+            <DriverFilter filters={filters} setFilters={setFilters} />
+            <AddDriverBut setShowAddForm={setShowAddForm} />
+            <DriverTable filteredDrivers={filteredDrivers} handleEditDriver={handleEditDriver} handleDelete={handleDelete} handleShowAssignments={handleShowAssignments} />
 
-            <div className="filter-group">
-                <input type="text" placeholder="Ім'я" value={filters.name}
-                    onChange={(e) => setFilters({ ...filters, name: e.target.value })} />
-                <input type="number" placeholder="Досвід" value={filters.experience}
-                    onChange={(e) => setFilters({ ...filters, experience: e.target.value })} />
-                <input type="text" placeholder="Ліцензія" value={filters.license}
-                    onChange={(e) => setFilters({ ...filters, license: e.target.value })} />
-            </div>
-
-            <div className="addbut-container">
-                <button className="button add-driver-button" onClick={() => setShowAddForm(true)}>
-                    ➕ Додати водія
-                </button>
-            </div>
-
-            <div className="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Ім'я</th>
-                            <th>Досвід</th>
-                            <th>Ліцензія</th>
-                            <th>Дії</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredDrivers.map((driver) => (
-                            <tr key={driver.driverId}>
-                                <td>{driver.driverId}</td>
-                                <td>{driver.name}</td>
-                                <td>{driver.experience}</td>
-                                <td>{driver.license}</td>
-                                <td>
-                                    <button className="button" onClick={() => handleEditDriver(driver)}>Редагувати</button>
-                                    <button className="button delete" onClick={() => handleDelete(driver.driverId)}>Видалити</button>
-                                    <button className="button assignments" onClick={() => handleShowAssignments(driver.driverId)}>📋 Призначення</button>
-                                </td>
-                            </tr>
-                        ))}
-                        {filteredDrivers.length === 0 && (
-                            <tr><td colSpan="4">Нічого не знайдено</td></tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
 
             {showAddForm && (
                 <div className="modal-overlay">
-                    <div className="modal-content">
-                        <h2>{selectedDriver ? "Редагувати водія" : "Додати нового водія"}</h2>
-                        <input type="text" placeholder="Ім'я" value={name}
-                            onChange={(e) => setName(e.target.value)} />
-                        <input type="number" placeholder="Досвід" value={experience}
-                            onChange={(e) => setExperience(e.target.value)} />
-                        <input type="text" placeholder="Ліцензія" value={license}
-                            onChange={(e) => setLicense(e.target.value)} />
-                        <div className="modal-buttons">
-                            <button className="button" onClick={handleSaveDriver}>
-                                {selectedDriver ? "Зберегти" : "Додати"}
-                            </button>
-                            <button className="button cancel" onClick={resetForm}>Скасувати</button>
-                        </div>
-                    </div>
+                    <AddDriverForm selectedDriver={selectedDriver} name={name} experience={experience} license={license} handleSaveDriver={handleSaveDriver} resetForm={resetForm} setName={setName} setExperience={setExperience} setLicense={setLicense} />
                 </div>
             )}
 
             {showAssignmentsModal && assignments && assignments.length > 0 && (
                 <div className="modal-overlay">
-                    <div className="modal-content-dr">
-                        <h2>Призначення водія</h2>
-                        <ul>
-                            {assignments.map((assignment, index) => (
-                                <li key={index}>
-                                    {`Маршрут: ${assignment.scheduleId}, Час відправлення: ${assignment.firstDepartureTime} — ${assignment.lastDepartureTime}`}
-                                </li>
-                            ))}
-                        </ul>
-                        <div className="modal-buttons">
-                            <button className="button cancel" onClick={() => setShowAssignmentsModal(false)}>Закрити</button>
-                        </div>
-                    </div>
+                    <DriverInfoForm assignments={assignments} setShowAssignmentsModal={setShowAssignmentsModal} />
                 </div>
             )}
 

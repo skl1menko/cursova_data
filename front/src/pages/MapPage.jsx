@@ -57,7 +57,7 @@ const MapPage = () => {
         <div className="map-container">
             <GoogleMap
                 className="map-f"
-                mapContainerStyle={{ marginRight: "-200px", width: '1550px', height: '100vh' }}
+                mapContainerStyle={{ marginRight: "-200px", width: '1700px', height: '100vh' }}
                 center={{ lat: 49.4460, lng: 32.0700 }}
                 zoom={13}
             >
