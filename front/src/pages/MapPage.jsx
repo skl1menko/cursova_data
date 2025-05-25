@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     GoogleMap,
     LoadScript,
@@ -14,6 +14,30 @@ const MapPage = () => {
     const [stops, setStops] = useState([]);
     const [showRoute, setShowRoute] = useState(false);
     const [routeRequested, setRouteRequested] = useState(false);
+    const [mapSize, setMapSize] = useState({
+        width: '100%',
+        height: '100%'
+    });
+
+    useEffect(() => {
+        const updateMapSize = () => {
+            setMapSize({
+                width: '100%',
+                height: '100%'
+            });
+        };
+
+        // Initial size calculation
+        updateMapSize();
+
+        // Update size on window resize
+        window.addEventListener('resize', updateMapSize);
+
+        // Cleanup
+        return () => {
+            window.removeEventListener('resize', updateMapSize);
+        };
+    }, []);
 
     const handleLoadRoute = async () => {
         if (showRoute) {
@@ -25,7 +49,7 @@ const MapPage = () => {
         }
 
         try {
-            const data = await fetchRouteById(1); // можно позже заменить на динамический ID
+            const data = await fetchRouteById(1);
             const sortedStops = data.stops.sort((a, b) => a.stopOrder - b.stopOrder);
             setStops(sortedStops);
             setShowRoute(true);
@@ -57,7 +81,7 @@ const MapPage = () => {
         <div className="map-container">
             <GoogleMap
                 className="map-f"
-                mapContainerStyle={{ marginRight: "-200px", width: '1700px', height: '100vh' }}
+                mapContainerStyle={mapSize}
                 center={{ lat: 49.4460, lng: 32.0700 }}
                 zoom={13}
             >

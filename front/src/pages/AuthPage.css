@@ -1,6 +1,6 @@
 .auth-body {
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    min-height: 100vh;
     background-image: url(../img/bus-retro-56.jpg);
     background-size: cover;
     background-position: center;
@@ -8,6 +8,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+    overflow-x: hidden;
 }
 
 .auth-header {
@@ -31,11 +33,14 @@
 .matte-block {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    max-width: 600px;
+    padding: 0 20px;
 }
 
 .auth-form {
-    width: 600px;
-    height: 700px;
+    width: 100%;
+    min-height: 700px;
     background: rgba(255, 255, 255, 0);
     backdrop-filter: blur(10px);
     border-radius: 15px;
@@ -45,6 +50,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 20px;
 }
   
 .role-selector-wrapper {

@@ -1,80 +1,121 @@
 .sidebar {
-    position: fixed; /* Закрепляем Sidebar на экране */
+    position: fixed;
     top: 0;
     left: 0;
-    height: 100vh; /* Чтобы он растягивался на всю высоту */
-    width: 200px;
-    background-color: #1f2937;
+    height: 100vh;
+    width: 260px;
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
     color: white;
     display: flex;
     flex-direction: column;
-    padding: 16px;
+    padding: 1.5rem;
     box-sizing: border-box;
-    transition: width 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
 }
 
 .sidebar.collapsed {
-    width: 70px;
+    width: 80px;
+    padding: 1.5rem 0.75rem;
 }
 
 .sidebar-header {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #374151;
+    gap: 1rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     min-height: 48px;
+    height: 48px;
+
 }
 
 .toggle-btn {
-    background: none;
+    background: rgba(255, 255, 255, 0.1);
     border: none;
-    color: inherit;
-    font-size: 20px;
+    color: white;
+    font-size: 1.25rem;
     cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
     margin-left: 5px;
 }
 
+.toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
 .sidebar-title {
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 1.5rem;
+    font-weight: 600;
     white-space: nowrap;
-    transition: opacity 0.2s ease;
+    transition: all 0.3s ease;
+    background: linear-gradient(90deg, #fbbf24, #f59e0b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    height: 40px;
+    line-height: 40px;
+    margin: 0;
+}
+
+.sidebar-nav-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(100vh - 120px);
+    margin-top: 1.5rem;
 }
 
 .sidebar-nav {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-top: 16px;
-    margin-left: -10px;
+    gap: 0.5rem;
+}
+
+.bottom-nav {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-item {
     display: flex;
     align-items: center;
     height: 48px;
-    padding: 8px 12px;
-    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
     cursor: pointer;
-    transition: background-color 0.2s ease, flex-direction 0.3s ease;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-item:hover {
-    background-color: #374151;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(4px);
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
-.sidebar-item.collapsed {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.sidebar-item.active {
+    background: rgba(251, 191, 36, 0.1);
+    border-color: #fbbf24;
 }
 
 .sidebar-icon {
     width: 24px;
     height: 24px;
     flex-shrink: 0;
+    transition: all 0.2s ease;
 }
 
 .highlight-icon {
@@ -82,9 +123,13 @@
 }
 
 .sidebar-text {
-    margin-left: 16px;
-    transition: opacity 0.2s ease, margin 0.2s ease, width 0.2s ease;
+    margin-left: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
     white-space: nowrap;
+    opacity: 0.9;
+    height: 24px;
+    line-height: 24px;
 }
 
 .sidebar.collapsed .sidebar-text {
@@ -94,3 +139,22 @@
     overflow: hidden;
     pointer-events: none;
 }
+
+/* Add smooth scrollbar for the sidebar */
+.sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+

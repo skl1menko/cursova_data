@@ -10,16 +10,19 @@ import { LoadScript } from '@react-google-maps/api';
 import { AnimatePresence } from 'framer-motion'
 import AnimatedPage from './components/AnimatedPage';
 import { AuthProvider } from './context/AuthContext';
+import './App.css';
+import { useState } from 'react';
 
 const AppWrapper = () => {
     const location = useLocation();
     const showSidebar = location.pathname !== '/';
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
     return (
         <AnimatePresence mode="wait">
-            <div style={{ display: 'flex', minHeight: '100vh' }}>
-                {showSidebar && <SideBar />}
-                <div style={{ flex: 1 }}>
+            <div className="app-container">
+                {showSidebar && <SideBar onCollapse={setIsSidebarCollapsed} />}
+                <main className={`main-content ${showSidebar ? 'with-sidebar' : ''} ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
                     <Routes location={location} key={location.pathname}>
                         <Route path="/" element={<AnimatedPage><AuthPage /></AnimatedPage>} />
                         <Route path="/admin-dashboard" element={<AnimatedPage><AdminDashboard /></AnimatedPage>} />
@@ -28,7 +31,7 @@ const AppWrapper = () => {
                         <Route path="/buss-info" element={<AnimatedPage><BussInfo /></AnimatedPage>} />
                         <Route path="/map-page" element={<AnimatedPage><MapPage /></AnimatedPage>} />
                     </Routes>
-                </div>
+                </main>
             </div>
         </AnimatePresence>
     );
