@@ -6,7 +6,8 @@ import InputGroup from '../components/AuthPageComp/InputGroup';
 import RoleSelector from '../components/AuthPageComp/RoleSelector';
 import ButtonContainer from '../components/AuthPageComp/ButtonContainer';
 import RegContainer from '../components/AuthPageComp/RegContainer';
-import { getUser, registerUser } from '../api/user_api.js';  // Импортируем функции из api.js
+import { getUser, registerUser } from '../api/user_api.js';
+import { useAuth } from '../context/AuthContext';
 
 const AuthPage = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -15,6 +16,7 @@ const AuthPage = () => {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
     const [users, setUsers] = useState([]);
+    const { login } = useAuth();
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -37,6 +39,7 @@ const AuthPage = () => {
             );
 
             if (matchedUser) {
+                login(matchedUser.role);
                 switch (matchedUser.role) {
                     case 'admin':
                         navigate('/admin-dashboard');
@@ -60,7 +63,7 @@ const AuthPage = () => {
             const newUser = { username, password, role };
 
             try {
-                await registerUser(newUser);  // Используем функцию регистрации из api.js
+                await registerUser(newUser);
                 alert('Registration successful');
                 setIsLogin(true);
             } catch (error) {

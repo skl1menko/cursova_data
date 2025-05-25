@@ -9,6 +9,7 @@ import MapPage from './pages/MapPage';
 import { LoadScript } from '@react-google-maps/api';
 import { AnimatePresence } from 'framer-motion'
 import AnimatedPage from './components/AnimatedPage';
+import { AuthProvider } from './context/AuthContext';
 
 const AppWrapper = () => {
     const location = useLocation();
@@ -30,20 +31,18 @@ const AppWrapper = () => {
                 </div>
             </div>
         </AnimatePresence>
-
     );
 };
 
-
 function App() {
     return (
-
-        <LoadScript googleMapsApiKey="AIzaSyAantXcM4bJhW6XC6eR4-Z9hWySQQr-Nto">
-
-            <Router>
-                <AppWrapper />
-            </Router>
-        </LoadScript>
+        <AuthProvider>
+            <LoadScript googleMapsApiKey="AIzaSyAantXcM4bJhW6XC6eR4-Z9hWySQQr-Nto">
+                <Router>
+                    <AppWrapper />
+                </Router>
+            </LoadScript>
+        </AuthProvider>
     );
 }
 

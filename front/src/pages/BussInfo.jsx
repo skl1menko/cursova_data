@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './BussInfo.css';
 import { getBuss, addBus, deleteBus, updateBus, getBusStats } from '../api/buss_api';
+import { useAuth } from '../context/AuthContext';
+import AssignDriverModal from '../components/BussInfoPage/AssignDriverModal';
 
 const BussInfo = () => {
     const [buses, setBuses] = useState([]);
@@ -12,6 +14,8 @@ const BussInfo = () => {
     const [selectedBus, setSelectedBus] = useState(null);
     const [busStats, setBusStats] = useState(null); // Додано для статистики автобуса
     const [showStats, setShowStats] = useState(false); // Стан для показу статистики
+    const [showAssignDriver, setShowAssignDriver] = useState(false);
+    const { userRole } = useAuth();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -85,6 +89,24 @@ const BussInfo = () => {
         }
     };
 
+    const handleAssignDriver = (bus) => {
+        setSelectedBus(bus);
+        setShowAssignDriver(true);
+    };
+
+    const handleAssignSuccess = () => {
+        // Refresh the bus list to show updated assignments
+        const fetchData = async () => {
+            try {
+                const data = await getBuss();
+                setBuses(data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchData();
+    };
+
     const filteredBuses = buses.filter(bus =>
         (filters.model === '' || bus.model.toLowerCase().includes(filters.model.toLowerCase())) &&
         (filters.capacity === '' || bus.capacity === parseInt(filters.capacity)) &&
@@ -114,11 +136,13 @@ const BussInfo = () => {
                     onChange={(e) => setFilters({ ...filters, year: e.target.value })} />
             </div>
 
-            <div className="addbut-container">
-                <button className="button add-bus-button" onClick={() => setShowAddForm(true)}>
-                    ➕ Додати автобус
-                </button>
-            </div>
+            {userRole === 'admin' && (
+                <div className="addbut-container">
+                    <button className="button add-bus-button" onClick={() => setShowAddForm(true)}>
+                        ➕ Додати автобус
+                    </button>
+                </div>
+            )}
 
             <div className="table-container">
                 <table>
@@ -139,8 +163,13 @@ const BussInfo = () => {
                                 <td>{bus.capacity}</td>
                                 <td>{bus.year}</td>
                                 <td>
-                                    <button className="button" onClick={() => handleEditBus(bus)}>Редагувати</button>
-                                    <button className="button delete" onClick={() => handleDelete(bus.busId)}>Видалити</button>
+                                    {userRole === 'admin' && (
+                                        <>
+                                            <button className="button" onClick={() => handleEditBus(bus)}>Редагувати</button>
+                                            <button className="button delete" onClick={() => handleDelete(bus.busId)}>Видалити</button>
+                                            <button className="button assign" onClick={() => handleAssignDriver(bus)}>👤 Призначити водія</button>
+                                        </>
+                                    )}
                                     <button className="button stats" onClick={() => handleShowStats(bus.busId)}>📊 Статистика</button>
                                 </td>
                             </tr>
@@ -176,7 +205,6 @@ const BussInfo = () => {
                 </div>
             )}
 
-            {/* Модальне вікно для статистики */}
             {showStats && busStats && (
                 <div className="modal-overlay">
                     <div className="modal-content">
@@ -215,8 +243,18 @@ const BussInfo = () => {
                 </div>
             )}
 
-
-
+            {showAssignDriver && selectedBus && (
+                <div className="modal-overlay">
+                    <AssignDriverModal
+                        bus={selectedBus}
+                        onClose={() => {
+                            setShowAssignDriver(false);
+                            setSelectedBus(null);
+                        }}
+                        onSuccess={handleAssignSuccess}
+                    />
+                </div>
+            )}
         </div>
     );
 };

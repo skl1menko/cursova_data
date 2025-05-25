@@ -54,3 +54,13 @@ export const getBusStats = async (id) => {
         throw new Error(error.response?.data || `Failed to fetch stats for bus with ID ${id}`);
     }
 };
+
+// POST: призначити водія на автобус
+export const assignDriverToBus = async (busId, driverId) => {
+    try {
+        const response = await axios.post(`${API_BASE}/${busId}/assign-driver`, { driverId });
+        return response.data;
+    } catch (error) {
+        throw new Error(JSON.stringify(error.response?.data || `Failed to assign driver to bus ${busId}`));
+    }
+};

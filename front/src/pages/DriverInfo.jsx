@@ -6,6 +6,8 @@ import AddDriverBut from '../components/DriverInfoPage/AddDriverBut';
 import DriverTable from '../components/DriverInfoPage/DriverTable';
 import AddDriverForm from '../components/DriverInfoPage/AddDriverForm';
 import DriverInfoForm from '../components/DriverInfoPage/DriverInfoForm';
+import { useAuth } from '../context/AuthContext';
+
 const DriverInfo = () => {
     const [drivers, setDrivers] = useState([]);
     const [name, setName] = useState('');
@@ -16,6 +18,7 @@ const DriverInfo = () => {
     const [selectedDriver, setSelectedDriver] = useState(null);
     const [assignments, setAssignments] = useState(null);
     const [showAssignmentsModal, setShowAssignmentsModal] = useState(false);
+    const { userRole } = useAuth();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -97,9 +100,14 @@ const DriverInfo = () => {
         <div className="drivers-page">
             <h1>Водії</h1>
             <DriverFilter filters={filters} setFilters={setFilters} />
-            <AddDriverBut setShowAddForm={setShowAddForm} />
-            <DriverTable filteredDrivers={filteredDrivers} handleEditDriver={handleEditDriver} handleDelete={handleDelete} handleShowAssignments={handleShowAssignments} />
-
+            {userRole === 'admin' && <AddDriverBut setShowAddForm={setShowAddForm} />}
+            <DriverTable 
+                filteredDrivers={filteredDrivers} 
+                handleEditDriver={handleEditDriver} 
+                handleDelete={handleDelete} 
+                handleShowAssignments={handleShowAssignments}
+                isAdmin={userRole === 'admin'}
+            />
 
             {showAddForm && (
                 <div className="modal-overlay">
@@ -112,8 +120,6 @@ const DriverInfo = () => {
                     <DriverInfoForm assignments={assignments} setShowAssignmentsModal={setShowAssignmentsModal} />
                 </div>
             )}
-
-
         </div>
     );
 };
