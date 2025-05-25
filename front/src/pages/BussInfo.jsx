@@ -3,6 +3,7 @@ import './BussInfo.css';
 import { getBuss, addBus, deleteBus, updateBus, getBusStats, assignDriverToBus, removeDriverFromBus } from '../api/buss_api';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import { showToast } from '../utils/toast';
 
 const BussInfo = () => {
     const [buses, setBuses] = useState([]);
@@ -62,7 +63,7 @@ const BussInfo = () => {
 
     const handleSaveBus = async () => {
         if (!model || !capacity || !year) {
-            alert('Будь ласка, заповніть всі поля');
+            showToast.warning('Будь ласка, заповніть всі поля');
             return;
         }
 
@@ -94,7 +95,7 @@ const BussInfo = () => {
             resetForm();
         } catch (error) {
             console.error("Error saving bus:", error);
-            alert('Помилка при збереженні автобуса: ' + (error.message || 'Невідома помилка'));
+            showToast.error('Помилка при збереженні автобуса: ' + (error.message || 'Невідома помилка'));
         }
     };
 
@@ -112,7 +113,7 @@ const BussInfo = () => {
             setBuses(buses.filter(bus => bus.busId !== id));
         } catch (error) {
             const errorMsg = JSON.parse(error.message);
-            alert(errorMsg.message || "Помилка при видаленні: автобус використовується в розкладі");
+            showToast.error(errorMsg.message || "Помилка при видаленні: автобус використовується в розкладі");
         }
     };
 
@@ -123,7 +124,7 @@ const BussInfo = () => {
             setShowStats(true);
         } catch (error) {
             console.error("Error fetching bus stats:", error);
-            alert("Не вдалося отримати статистику для цього автобуса.");
+            showToast.error("Не вдалося отримати статистику для цього автобуса.");
         }
     };
 
@@ -132,16 +133,16 @@ const BussInfo = () => {
             if (!selectedDriver) {
                 // Якщо вибрано пусте значення, відкріплюємо водія
                 await removeDriverFromBus(busId);
-                alert('Водія успішно відкріплено від автобуса');
+                showToast.success('Водія успішно відкріплено від автобуса');
             } else {
                 const driverId = parseInt(selectedDriver);
                 if (isNaN(driverId)) {
-                    alert('Невірний ID водія');
+                    showToast.error('Невірний ID водія');
                     return;
                 }
 
                 await assignDriverToBus(busId, driverId);
-                alert('Водія успішно призначено до автобуса');
+                showToast.success('Водія успішно призначено до автобуса');
             }
             
             setShowAssignDriver(false);
@@ -174,7 +175,7 @@ const BussInfo = () => {
             }
         } catch (error) {
             console.error("Error handling driver assignment:", error);
-            alert('Помилка: ' + (error.message || 'Невідома помилка'));
+            showToast.error('Помилка: ' + (error.message || 'Невідома помилка'));
         }
     };
 
@@ -192,7 +193,7 @@ const BussInfo = () => {
     const handleRemoveDriver = async (busId) => {
         try {
             await removeDriverFromBus(busId);
-            alert('Водія успішно відкріплено від автобуса');
+            showToast.success('Водія успішно відкріплено від автобуса');
             
             // Оновлюємо список автобусів
             const updatedBuses = await Promise.all(
@@ -221,7 +222,7 @@ const BussInfo = () => {
             }
         } catch (error) {
             console.error("Error removing driver:", error);
-            alert('Помилка при відкріпленні водія: ' + (error.message || 'Невідома помилка'));
+            showToast.error('Помилка при відкріпленні водія: ' + (error.message || 'Невідома помилка'));
         }
     };
 
@@ -243,14 +244,14 @@ const BussInfo = () => {
 
             <div className="filter-group">
                 <select value={filters.model} onChange={handleModelChange}>
-                    <option value="">Filter by Model</option>
+                    <option value="">Всі моделі</option>
                     {uniqueModels.map((model, index) => (
                         <option key={index} value={model}>{model}</option>
                     ))}
                 </select>
-                <input type="number" placeholder="Capacity" value={filters.capacity}
+                <input type="number" placeholder="Місткість" value={filters.capacity}
                     onChange={(e) => setFilters({ ...filters, capacity: e.target.value })} />
-                <input type="number" placeholder="Year" value={filters.year}
+                <input type="number" placeholder="Рік" value={filters.year}
                     onChange={(e) => setFilters({ ...filters, year: e.target.value })} />
             </div>
 
@@ -262,44 +263,88 @@ const BussInfo = () => {
                 </div>
             )}
 
-            <div className="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Buss Num</th>
-                            <th>Модель</th>
-                            <th>Кількість місць</th>
-                            <th>Рік</th>
-                            <th>Дії</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredBuses.map((bus) => (
-                            <tr className="rounded-tr" key={bus.busId}>
-                                <td>{bus.busId}</td>
-                                <td>{bus.model}</td>
-                                <td>{bus.capacity}</td>
-                                <td>{bus.year}</td>
-                                <td>
-                                    {userRole === 'admin' && (
-                                        <>
-                                            <button className="button" onClick={() => handleEditBus(bus)}>Редагувати</button>
-                                            <button className="button delete" onClick={() => handleDelete(bus.busId)}>Видалити</button>
-                                            <button className="button" onClick={() => {
-                                                setSelectedBus(bus);
-                                                setShowAssignDriver(true);
-                                            }}>Призначити водія</button>
-                                        </>
-                                    )}
-                                    <button className="button stats" onClick={() => handleShowStats(bus.busId)}>📊 Статистика</button>
-                                </td>
-                            </tr>
-                        ))}
-                        {filteredBuses.length === 0 && (
-                            <tr><td colSpan="5">Нічого не знайдено</td></tr>
-                        )}
-                    </tbody>
-                </table>
+            <div className="buses-grid">
+                {filteredBuses.map((bus) => (
+                    <div className="bus-card" key={bus.busId}>
+                        <div className="bus-card-header">
+                            <h3>Автобус #{bus.busId}</h3>
+                        </div>
+                        <div className="bus-card-content">
+                            <div className="bus-info-item">
+                                <span className="info-label">Модель:</span>
+                                <span className="info-value">{bus.model}</span>
+                            </div>
+                            <div className="bus-info-item">
+                                <span className="info-label">Місткість:</span>
+                                <span className="info-value">{bus.capacity} місць</span>
+                            </div>
+                            <div className="bus-info-item">
+                                <span className="info-label">Рік випуску:</span>
+                                <span className="info-value">{bus.year}</span>
+                            </div>
+                            {bus.Schedules && bus.Schedules.length > 0 && bus.Schedules[0].driver && (
+                                <div className="bus-info-item">
+                                    <span className="info-label">Водій:</span>
+                                    <span className="info-value">{bus.Schedules[0].driver.name}</span>
+                                </div>
+                            )}
+                            {selectedBus && selectedBus.driver && (
+                                <div className="driver-info">
+                                    <h4>Информация о водителе</h4>
+                                    <div className="driver-details">
+                                        <div className="driver-detail-item">
+                                            <span className="driver-detail-label">Имя:</span>
+                                            <span className="driver-detail-value">{selectedBus.driver.name}</span>
+                                        </div>
+                                        <div className="driver-detail-item">
+                                            <span className="driver-detail-label">Телефон:</span>
+                                            <span className="driver-detail-value">{selectedBus.driver.phone}</span>
+                                        </div>
+                                        <div className="driver-detail-item">
+                                            <span className="driver-detail-label">Опыт:</span>
+                                            <span className="driver-detail-value">{selectedBus.driver.experience} лет</span>
+                                        </div>
+                                    </div>
+                                    <div className={`driver-status ${selectedBus.driver.isActive ? 'active' : 'inactive'}`}>
+                                        {selectedBus.driver.isActive ? 'Активен' : 'Неактивен'}
+                                    </div>
+                                    <div className="driver-actions">
+                                        <button className="button contact" onClick={() => handleContactDriver(selectedBus.driver)}>
+                                            Связаться
+                                        </button>
+                                        <button className="button schedule" onClick={() => handleViewSchedule(selectedBus.driver)}>
+                                            Расписание
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        <div className="bus-card-actions">
+                            {userRole === 'admin' && (
+                                <>
+                                    <button className="button edit" onClick={() => handleEditBus(bus)}>
+                                        ✏️ Редагувати
+                                    </button>
+                                    <button className="button delete" onClick={() => handleDelete(bus.busId)}>
+                                        🗑️ Видалити
+                                    </button>
+                                    <button className="button assign" onClick={() => {
+                                        setSelectedBus(bus);
+                                        setShowAssignDriver(true);
+                                    }}>
+                                        👤 Призначити водія
+                                    </button>
+                                </>
+                            )}
+                            <button className="button stats" onClick={() => handleShowStats(bus.busId)}>
+                                📊 Статистика
+                            </button>
+                        </div>
+                    </div>
+                ))}
+                {filteredBuses.length === 0 && (
+                    <div className="no-buses">Автобуси не знайдено</div>
+                )}
             </div>
 
             {showAddForm && (

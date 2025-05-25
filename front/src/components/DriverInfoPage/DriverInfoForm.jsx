@@ -1,3 +1,4 @@
+import './DriverInfoForm.css';
 const DriverInfoForm = ({assignments,setShowAssignmentsModal}) => {
     return (
         <div className="modal-content-dr">

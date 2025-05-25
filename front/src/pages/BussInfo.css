@@ -1,6 +1,6 @@
 .buses-page {
     padding: 2rem;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     background-color: #f8f9fa;
     min-height: 100%;
@@ -114,12 +114,10 @@
 
 /* Добавляем иконки к кнопкам */
 .add-bus-button::before {
-    content: "➕";
     font-size: 1.1rem;
 }
 
 .button.delete::before {
-    content: "🗑️";
     font-size: 1.1rem;
 }
 
@@ -272,43 +270,352 @@ tr:hover {
 }
 
 .driver-info {
-    background: #f1f8ff;
-    padding: 1rem;
-    border-radius: 6px;
-    margin-top: 0.5rem;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-top: 1rem;
+    border: 1px solid rgba(14, 165, 233, 0.2);
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.1);
 }
 
 .driver-info h4 {
-    color: #2c3e50;
-    margin-bottom: 0.5rem;
+    color: #0f172a;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.driver-select {
-    width: 100%;
+.driver-info h4::before {
+    content: "👤";
+    font-size: 1.2rem;
+}
+
+.driver-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.driver-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     padding: 0.75rem;
-    margin-bottom: 1rem;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.driver-detail-item:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+}
+
+.driver-detail-label {
+    color: #64748b;
+    font-size: 0.9rem;
+    font-weight: 500;
+    min-width: 80px;
+}
+
+.driver-detail-value {
+    color: #0f172a;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.driver-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+.driver-status.active {
+    background: rgba(34, 197, 94, 0.1);
+    color: #15803d;
+}
+
+.driver-status.inactive {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+}
+
+.driver-status::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.driver-status.active::before {
+    background: #22c55e;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+}
+
+.driver-status.inactive::before {
+    background: #ef4444;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+.driver-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.driver-actions .button {
+    flex: 1;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.driver-actions .button::before {
+    font-size: 1.1rem;
+}
+
+.button.contact {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+    color: white;
+}
+
+.button.contact:hover {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+}
+
+.button.contact::before {
+    content: "📞";
+}
+
+.button.schedule {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+}
+
+.button.schedule:hover {
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+}
+
+.button.schedule::before {
+}
+
+.buses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    padding: 1rem 0;
+}
+
+.bus-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.bus-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.bus-card-header {
+    background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
+    color: white;
+    padding: 2rem 1.5rem;
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+}
+
+.bus-card-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+    z-index: 1;
+}
+
+.bus-card-header h3 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 2;
+    letter-spacing: 0.5px;
+}
+
+.bus-model {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.bus-card-content {
+    padding: 1.5rem;
+    flex-grow: 1;
+    background: linear-gradient(to bottom, #ffffff 0%, #f8f9fa 100%);
+}
+
+.bus-info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    gap: 1rem;
+}
+
+.bus-info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    color: #64748b;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+    min-width: 100px;
+    font-weight: 500;
+}
+
+.info-value {
+    color: #1e293b;
+    font-weight: 600;
+    text-align: right;
+    word-break: break-word;
+    flex: 1;
     font-size: 1rem;
-    background-color: white;
+}
+
+.bus-card-actions {
+    padding: 1.5rem;
+    background: #f8fafc;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.bus-card-actions .button {
+    flex: 1;
+    min-width: 120px;
+    padding: 0.85rem;
+    font-size: 0.9rem;
+    border-radius: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: all 0.2s ease;
+}
+
+.button.edit {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+}
+
+.button.edit:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: translateY(-2px);
+}
+
+.button.delete {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+}
+
+.button.delete:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: translateY(-2px);
+}
+
+.button.assign {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+}
+
+.button.assign:hover {
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    transform: translateY(-2px);
+}
+
+.button.stats {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+    color: white;
+}
+
+.button.stats:hover {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    transform: translateY(-2px);
+}
+
+.no-buses {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 16px;
+    color: #64748b;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 @media (max-width: 768px) {
-    .buses-page {
-        padding: 1rem;
+    .buses-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
     }
     
-    .filter-group {
+    .bus-card-actions {
         flex-direction: column;
     }
     
-    .table-container {
-        margin: 0 -1rem;
-        border-radius: 0;
+    .bus-card-actions .button {
+        width: 100%;
     }
     
-    .modal-content {
-        width: 95%;
-        margin: 1rem;
+    .bus-card-header {
+        padding: 1.5rem 1rem;
+    }
+    
+    .bus-card-header h3 {
+        font-size: 1.5rem;
+    }
+    
+    .driver-details {
+        grid-template-columns: 1fr;
+    }
+    
+    .driver-actions {
+        flex-direction: column;
+    }
+    
+    .driver-actions .button {
+        width: 100%;
     }
 }

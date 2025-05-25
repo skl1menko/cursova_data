@@ -201,8 +201,8 @@ namespace BusManagementSystem.Controllers
                 ScheduleId = busId,
                 BusId = busId,
                 DriverId = request.DriverId,
-                FirstDepartureTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                LastDepartureTime = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm:ss") // Default schedule for 1 day
+                FirstDepartureTime = "",
+                LastDepartureTime = "" // Default schedule for 1 day
             };
 
             _context.Schedules.Add(schedule);

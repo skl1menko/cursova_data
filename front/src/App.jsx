@@ -10,6 +10,7 @@ import { LoadScript } from '@react-google-maps/api';
 import { AnimatePresence } from 'framer-motion'
 import AnimatedPage from './components/AnimatedPage';
 import { AuthProvider } from './context/AuthContext';
+import { Toaster } from 'react-hot-toast';
 import './App.css';
 import { useState } from 'react';
 
@@ -43,6 +44,7 @@ function App() {
             <LoadScript googleMapsApiKey="AIzaSyAantXcM4bJhW6XC6eR4-Z9hWySQQr-Nto">
                 <Router>
                     <AppWrapper />
+                    <Toaster />
                 </Router>
             </LoadScript>
         </AuthProvider>

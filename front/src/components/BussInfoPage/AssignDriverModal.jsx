@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getDrivers } from '../../api/driver_api';
 import { assignDriverToBus } from '../../api/buss_api';
+import { showToast } from '../../utils/toast';
 
 const AssignDriverModal = ({ bus, onClose, onSuccess }) => {
     const [drivers, setDrivers] = useState([]);
@@ -21,7 +22,7 @@ const AssignDriverModal = ({ bus, onClose, onSuccess }) => {
 
     const handleAssign = async () => {
         if (!selectedDriver) {
-            alert('Будь ласка, оберіть водія');
+            showToast.warning('Будь ласка, оберіть водія');
             return;
         }
 
@@ -31,7 +32,7 @@ const AssignDriverModal = ({ bus, onClose, onSuccess }) => {
             onSuccess();
             onClose();
         } catch (error) {
-            alert('Помилка при призначенні водія: ' + error.message);
+            showToast.error('Помилка при призначенні водія: ' + error.message);
         } finally {
             setLoading(false);
         }

@@ -8,6 +8,7 @@ import ButtonContainer from '../components/AuthPageComp/ButtonContainer';
 import RegContainer from '../components/AuthPageComp/RegContainer';
 import { getUser, registerUser } from '../api/user_api.js';
 import { useAuth } from '../context/AuthContext';
+import { showToast } from '../utils/toast';
 
 const AuthPage = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -54,20 +55,20 @@ const AuthPage = () => {
                         navigate('/driver-info');
                         break;
                     default:
-                        alert('Unknown role');
+                        showToast.error('Unknown role');
                 }
             } else {
-                alert('Invalid credentials');
+                showToast.error('Invalid credentials');
             }
         } else {
             const newUser = { username, password, role };
 
             try {
                 await registerUser(newUser);
-                alert('Registration successful');
+                showToast.success('Registration successful');
                 setIsLogin(true);
             } catch (error) {
-                alert(`Error during registration: ${error.message}`);
+                showToast.error(`Error during registration: ${error.message}`);
             }
         }
     };
