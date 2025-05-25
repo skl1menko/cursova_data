@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './BussInfo.css';
-import { getBuss, addBus, deleteBus, updateBus, getBusStats } from '../api/buss_api';
+import { getBuss, addBus, deleteBus, updateBus, getBusStats, assignDriverToBus } from '../api/buss_api';
 import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
 
 const BussInfo = () => {
     const [buses, setBuses] = useState([]);
@@ -13,14 +14,21 @@ const BussInfo = () => {
     const [selectedBus, setSelectedBus] = useState(null);
     const [busStats, setBusStats] = useState(null); // Додано для статистики автобуса
     const [showStats, setShowStats] = useState(false); // Стан для показу статистики
+    const [showAssignDriver, setShowAssignDriver] = useState(false);
+    const [drivers, setDrivers] = useState([]);
+    const [selectedDriver, setSelectedDriver] = useState('');
     
     const { userRole } = useAuth();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await getBuss();
-                setBuses(data);
+                const [busesData, driversData] = await Promise.all([
+                    getBuss(),
+                    axios.get('http://localhost:5227/api/drivers')
+                ]);
+                setBuses(busesData);
+                setDrivers(driversData.data);
             } catch (error) {
                 console.error(error);
             }
@@ -38,13 +46,28 @@ const BussInfo = () => {
     };
 
     const handleSaveBus = async () => {
-        const busData = {
-            busId: selectedBus?.busId,
+        if (!model || !capacity || !year) {
+            alert('Будь ласка, заповніть всі поля');
+            return;
+        }
+
+        const busData = selectedBus ? {
+            busId: selectedBus.busId,
             model,
             capacity: parseInt(capacity),
             year: parseInt(year),
+            Routes: selectedBus.Routes || [],
+            Schedules: selectedBus.Schedules || []
+        } : {
+            model,
+            capacity: parseInt(capacity),
+            year: parseInt(year),
+            Routes: [],
             Schedules: []
         };
+
+        console.log('Sending bus data:', busData);
+
         try {
             if (selectedBus) {
                 const updated = await updateBus(selectedBus.busId, busData);
@@ -56,6 +79,7 @@ const BussInfo = () => {
             resetForm();
         } catch (error) {
             console.error("Error saving bus:", error);
+            alert('Помилка при збереженні автобуса: ' + (error.message || 'Невідома помилка'));
         }
     };
 
@@ -88,6 +112,34 @@ const BussInfo = () => {
         }
     };
 
+    const handleAssignDriver = async (busId) => {
+        if (!selectedDriver) {
+            alert('Будь ласка, оберіть водія');
+            return;
+        }
+
+        try {
+            const driverId = parseInt(selectedDriver);
+            if (isNaN(driverId)) {
+                alert('Невірний ID водія');
+                return;
+            }
+
+            await assignDriverToBus(busId, driverId);
+            alert('Водія успішно призначено до автобуса');
+            setShowAssignDriver(false);
+            setSelectedDriver('');
+            
+            // Refresh bus stats if they are currently shown
+            if (showStats && busStats && busStats.busId === busId) {
+                const stats = await getBusStats(busId);
+                setBusStats(stats);
+            }
+        } catch (error) {
+            console.error("Error assigning driver:", error);
+            alert('Помилка при призначенні водія: ' + (error.message || 'Невідома помилка'));
+        }
+    };
 
     const filteredBuses = buses.filter(bus =>
         (filters.model === '' || bus.model.toLowerCase().includes(filters.model.toLowerCase())) &&
@@ -149,7 +201,10 @@ const BussInfo = () => {
                                         <>
                                             <button className="button" onClick={() => handleEditBus(bus)}>Редагувати</button>
                                             <button className="button delete" onClick={() => handleDelete(bus.busId)}>Видалити</button>
-                                           
+                                            <button className="button" onClick={() => {
+                                                setSelectedBus(bus);
+                                                setShowAssignDriver(true);
+                                            }}>Призначити водія</button>
                                         </>
                                     )}
                                     <button className="button stats" onClick={() => handleShowStats(bus.busId)}>📊 Статистика</button>
@@ -208,11 +263,21 @@ const BussInfo = () => {
                             )}
                             {busStats.schedules && busStats.schedules.length > 0 ? (
                                 <div>
-                                    <h3>Розклад:</h3>
+                                    <h3>Розклад та водії:</h3>
                                     {busStats.schedules.map((schedule, index) => (
-                                        <div key={index}>
+                                        <div key={index} className="schedule-item">
                                             <p><strong>Час першого відправлення:</strong> {schedule.firstDeparture}</p>
                                             <p><strong>Час останнього відправлення:</strong> {schedule.lastDeparture}</p>
+                                            {schedule.driver ? (
+                                                <div className="driver-info">
+                                                    <h4>Водій:</h4>
+                                                    <p><strong>Ім'я:</strong> {schedule.driver.name}</p>
+                                                    <p><strong>Ліцензія:</strong> {schedule.driver.license}</p>
+                                                    <p><strong>Досвід:</strong> {schedule.driver.experience} років</p>
+                                                </div>
+                                            ) : (
+                                                <p>Водій не призначений</p>
+                                            )}
                                         </div>
                                     ))}
                                 </div>
@@ -225,7 +290,43 @@ const BussInfo = () => {
                 </div>
             )}
 
-            
+            {showAssignDriver && selectedBus && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h2>Призначити водія до автобуса {selectedBus.busId}</h2>
+                        <select 
+                            value={selectedDriver} 
+                            onChange={(e) => setSelectedDriver(e.target.value)}
+                            className="driver-select"
+                        >
+                            <option value="">Оберіть водія</option>
+                            {drivers.map((driver) => (
+                                <option key={driver.driverId} value={driver.driverId}>
+                                    {driver.name} (Ліцензія: {driver.license})
+                                </option>
+                            ))}
+                        </select>
+                        <div className="modal-buttons">
+                            <button 
+                                className="button" 
+                                onClick={() => handleAssignDriver(selectedBus.busId)}
+                                disabled={!selectedDriver}
+                            >
+                                Призначити
+                            </button>
+                            <button 
+                                className="button cancel" 
+                                onClick={() => {
+                                    setShowAssignDriver(false);
+                                    setSelectedDriver('');
+                                }}
+                            >
+                                Скасувати
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

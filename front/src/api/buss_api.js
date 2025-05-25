@@ -37,9 +37,19 @@ export const deleteBus = async (id) => {
 // PUT: оновити дані автобуса
 export const updateBus = async (id, updatedBus) => {
     try {
-        const response = await axios.put(`${API_BASE}/${id}`, updatedBus);
-        return response.data || updatedBus;  // Якщо відповідь порожня — повертаємо вхідні дані
+        const response = await axios.put(`${API_BASE}/${id}`, updatedBus, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.data || updatedBus;
     } catch (error) {
+        console.error('Update bus error details:', {
+            status: error.response?.status,
+            data: error.response?.data,
+            busId: id,
+            updatedBus
+        });
         throw new Error(error.response?.data || `Failed to update bus with ID ${id}`);
     }
 };
@@ -52,6 +62,20 @@ export const getBusStats = async (id) => {
         return response.data;
     } catch (error) {
         throw new Error(error.response?.data || `Failed to fetch stats for bus with ID ${id}`);
+    }
+};
+
+// POST: призначити водія до автобуса
+export const assignDriverToBus = async (busId, driverId) => {
+    try {
+        const response = await axios.post(`${API_BASE}/${busId}/assign-driver`, { driverId }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data || `Failed to assign driver to bus with ID ${busId}`);
     }
 };
 

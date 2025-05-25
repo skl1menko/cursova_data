@@ -114,6 +114,7 @@ namespace BusManagementSystem.Controllers
             var busStats = await _context.Buses
                 .Where(b => b.BusId == id)
                 .Include(b => b.Schedules)
+                    .ThenInclude(s => s.Driver)
                 .Include(b => b.Routes)
                     .ThenInclude(r => r.Stops)
                 .Select(b => new
@@ -129,7 +130,14 @@ namespace BusManagementSystem.Controllers
                     {
                         ScheduleId = s.ScheduleId,
                         FirstDeparture = s.FirstDepartureTime,
-                        LastDeparture = s.LastDepartureTime
+                        LastDeparture = s.LastDepartureTime,
+                        Driver = s.Driver != null ? new
+                        {
+                            DriverId = s.Driver.DriverId,
+                            Name = s.Driver.Name,
+                            License = s.Driver.License,
+                            Experience = s.Driver.Experience
+                        } : null
                     })
                 })
                 .FirstOrDefaultAsync();
@@ -142,6 +150,52 @@ namespace BusManagementSystem.Controllers
             return Ok(busStats);
         }
 
+        // POST: api/Buses/5/assign-driver
+        [HttpPost("{busId}/assign-driver")]
+        public async Task<IActionResult> AssignDriverToBus(int busId, [FromBody] DriverAssignmentRequest request)
+        {
+            if (request == null || request.DriverId <= 0)
+            {
+                return BadRequest("Invalid driver ID");
+            }
+
+            var bus = await _context.Buses
+                .Include(b => b.Schedules)
+                .FirstOrDefaultAsync(b => b.BusId == busId);
+
+            if (bus == null)
+            {
+                return NotFound($"Bus with ID {busId} not found.");
+            }
+
+            var driver = await _context.Drivers
+                .Include(d => d.Schedules)
+                .FirstOrDefaultAsync(d => d.DriverId == request.DriverId);
+
+            if (driver == null)
+            {
+                return NotFound($"Driver with ID {request.DriverId} not found.");
+            }
+
+            // Create a new schedule for the driver-bus assignment
+            var schedule = new Schedule
+            {
+                BusId = busId,
+                DriverId = request.DriverId,
+                FirstDepartureTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                LastDepartureTime = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm:ss") // Default schedule for 1 day
+            };
+
+            _context.Schedules.Add(schedule);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Driver successfully assigned to bus", schedule });
+        }
+
+        public class DriverAssignmentRequest
+        {
+            public int DriverId { get; set; }
+        }
 
     }
 }
