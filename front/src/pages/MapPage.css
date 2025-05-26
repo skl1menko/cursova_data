@@ -11,17 +11,23 @@
 
 .mapbut-cont {
     position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
+    top: 8px;
+    left: 210px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
 }
 
 .route-num {
+    width: 22px;
+    height: 45px;
+    display:flex;
+    justify-content: center;
+    align-items: center;
     background: var(--primary);
     color: white;
     border: none;
     border-radius: 8px;
-    padding: 12px 24px;
     font-size: 1.2rem;
     font-weight: 600;
     cursor: pointer;

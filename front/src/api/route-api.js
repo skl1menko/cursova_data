@@ -12,3 +12,13 @@ export const fetchRouteById = async (routeId) => {
         throw error;
     }
 };
+
+export const fetchAllRoutes = async () => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/routes`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching all routes:', error);
+        throw error;
+    }
+};

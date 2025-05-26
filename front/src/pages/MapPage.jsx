@@ -7,17 +7,31 @@ import {
 } from '@react-google-maps/api';
 import './MapPage.css';
 
-import { fetchRouteById } from '../api/route-api';
+import { fetchRouteById, fetchAllRoutes } from '../api/route-api';
 
 const MapPage = () => {
     const [directions, setDirections] = useState(null);
     const [stops, setStops] = useState([]);
     const [showRoute, setShowRoute] = useState(false);
     const [routeRequested, setRouteRequested] = useState(false);
+    const [routes, setRoutes] = useState([]);
+    const [selectedRouteId, setSelectedRouteId] = useState(null);
     const [mapSize, setMapSize] = useState({
         width: '100%',
         height: '100%'
     });
+
+    useEffect(() => {
+        const loadRoutes = async () => {
+            try {
+                const routesData = await fetchAllRoutes();
+                setRoutes(routesData);
+            } catch (error) {
+                console.error('Failed to load routes:', error);
+            }
+        };
+        loadRoutes();
+    }, []);
 
     useEffect(() => {
         const updateMapSize = () => {
@@ -39,21 +53,23 @@ const MapPage = () => {
         };
     }, []);
 
-    const handleLoadRoute = async () => {
-        if (showRoute) {
+    const handleLoadRoute = async (routeId) => {
+        if (showRoute && selectedRouteId === routeId) {
             setDirections(null);
             setStops([]);
             setShowRoute(false);
             setRouteRequested(false);
+            setSelectedRouteId(null);
             return;
         }
 
         try {
-            const data = await fetchRouteById(1);
+            const data = await fetchRouteById(routeId);
             const sortedStops = data.stops.sort((a, b) => a.stopOrder - b.stopOrder);
             setStops(sortedStops);
             setShowRoute(true);
             setRouteRequested(false);
+            setSelectedRouteId(routeId);
         } catch (error) {
             console.error('Failed to load route:', error);
         }
@@ -86,7 +102,15 @@ const MapPage = () => {
                 zoom={13}
             >
                 <div className="mapbut-cont">
-                    <button className="route-num" onClick={handleLoadRoute}>21</button>
+                    {routes.map((route) => (
+                        <button
+                            key={route.id}
+                            className={`route-num ${selectedRouteId === route.id ? 'active' : ''}`}
+                            onClick={() => handleLoadRoute(route.routeNumber)}
+                        >
+                            {route.routeNumber}
+                        </button>
+                    ))}
                 </div>
 
                 {showRoute && origin && destination && !routeRequested && (

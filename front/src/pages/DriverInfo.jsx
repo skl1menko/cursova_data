@@ -141,7 +141,7 @@ const DriverInfo = () => {
                                 </>
                             )}
                             <button className="button schedule" onClick={() => handleShowAssignments(driver.driverId)}>
-                            <RiCalendarScheduleLine className='edit-logo'/> Розклад
+                            <RiCalendarScheduleLine className='edit-logo' style={{color: 'white'}}/> Розклад
                             </button>
                         </div>
                     </div>
