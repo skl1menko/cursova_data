@@ -4,8 +4,11 @@ import { getBuss, addBus, deleteBus, updateBus, getBusStats, assignDriverToBus, 
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { showToast } from '../utils/toast';
-
+import { useLocation } from 'react-router';
+import BussFilter from '../components/BussInfoPage/BussFilter';
+import AddBussBut from '../components/BussInfoPage/AddBussBut';
 const BussInfo = () => {
+    const location = useLocation();
     const [buses, setBuses] = useState([]);
     const [model, setModel] = useState('');
     const [capacity, setCapacity] = useState('');
@@ -51,6 +54,14 @@ const BussInfo = () => {
         };
         fetchData();
     }, []);
+
+    useEffect(() => {
+        // Check URL parameters for showAddForm
+        const params = new URLSearchParams(location.search);
+        if (params.get('showAddForm') === 'true') {
+            setShowAddForm(true);
+        }
+    }, [location]);
 
     const resetForm = () => {
         setModel('');
@@ -190,41 +201,7 @@ const BussInfo = () => {
         return '';
     };
 
-    const handleRemoveDriver = async (busId) => {
-        try {
-            await removeDriverFromBus(busId);
-            showToast.success('Водія успішно відкріплено від автобуса');
-            
-            // Оновлюємо список автобусів
-            const updatedBuses = await Promise.all(
-                buses.map(async (bus) => {
-                    if (bus.busId === busId) {
-                        try {
-                            const stats = await getBusStats(busId);
-                            return {
-                                ...bus,
-                                Schedules: stats.schedules || []
-                            };
-                        } catch (error) {
-                            console.error(`Error fetching stats for bus ${busId}:`, error);
-                            return bus;
-                        }
-                    }
-                    return bus;
-                })
-            );
-            setBuses(updatedBuses);
-            
-            // Refresh bus stats if they are currently shown
-            if (showStats && busStats && busStats.busId === busId) {
-                const stats = await getBusStats(busId);
-                setBusStats(stats);
-            }
-        } catch (error) {
-            console.error("Error removing driver:", error);
-            showToast.error('Помилка при відкріпленні водія: ' + (error.message || 'Невідома помилка'));
-        }
-    };
+  
 
     const filteredBuses = buses.filter(bus =>
         (filters.model === '' || bus.model.toLowerCase().includes(filters.model.toLowerCase())) &&
@@ -242,30 +219,21 @@ const BussInfo = () => {
         <div className="buses-page">
             <h1>Автобуси</h1>
 
-            <div className="filter-group">
-                <select value={filters.model} onChange={handleModelChange}>
-                    <option value="">Всі моделі</option>
-                    {uniqueModels.map((model, index) => (
-                        <option key={index} value={model}>{model}</option>
-                    ))}
-                </select>
-                <input type="number" placeholder="Місткість" value={filters.capacity}
-                    onChange={(e) => setFilters({ ...filters, capacity: e.target.value })} />
-                <input type="number" placeholder="Рік" value={filters.year}
-                    onChange={(e) => setFilters({ ...filters, year: e.target.value })} />
-            </div>
-
+            <BussFilter filters={filters} setFilters={setFilters} uniqueModels={uniqueModels} handleModelChange={handleModelChange} />
+            
             {userRole === 'admin' && (
-                <div className="addbut-container">
-                    <button className="button add-bus-button" onClick={() => setShowAddForm(true)}>
-                        ➕ Додати автобус
-                    </button>
-                </div>
+                <AddBussBut setShowAddForm={setShowAddForm} />
+                
             )}
 
             <div className="buses-grid">
                 {filteredBuses.map((bus) => (
                     <div className="bus-card" key={bus.busId}>
+                        {userRole === 'admin' && (
+                            <button className="delete-cross" onClick={() => handleDelete(bus.busId)}>
+                                ✕
+                            </button>
+                        )}
                         <div className="bus-card-header">
                             <h3>Автобус #{bus.busId}</h3>
                         </div>
@@ -288,45 +256,12 @@ const BussInfo = () => {
                                     <span className="info-value">{bus.Schedules[0].driver.name}</span>
                                 </div>
                             )}
-                            {selectedBus && selectedBus.driver && (
-                                <div className="driver-info">
-                                    <h4>Информация о водителе</h4>
-                                    <div className="driver-details">
-                                        <div className="driver-detail-item">
-                                            <span className="driver-detail-label">Имя:</span>
-                                            <span className="driver-detail-value">{selectedBus.driver.name}</span>
-                                        </div>
-                                        <div className="driver-detail-item">
-                                            <span className="driver-detail-label">Телефон:</span>
-                                            <span className="driver-detail-value">{selectedBus.driver.phone}</span>
-                                        </div>
-                                        <div className="driver-detail-item">
-                                            <span className="driver-detail-label">Опыт:</span>
-                                            <span className="driver-detail-value">{selectedBus.driver.experience} лет</span>
-                                        </div>
-                                    </div>
-                                    <div className={`driver-status ${selectedBus.driver.isActive ? 'active' : 'inactive'}`}>
-                                        {selectedBus.driver.isActive ? 'Активен' : 'Неактивен'}
-                                    </div>
-                                    <div className="driver-actions">
-                                        <button className="button contact" onClick={() => handleContactDriver(selectedBus.driver)}>
-                                            Связаться
-                                        </button>
-                                        <button className="button schedule" onClick={() => handleViewSchedule(selectedBus.driver)}>
-                                            Расписание
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
                         </div>
                         <div className="bus-card-actions">
                             {userRole === 'admin' && (
                                 <>
                                     <button className="button edit" onClick={() => handleEditBus(bus)}>
                                         ✏️ Редагувати
-                                    </button>
-                                    <button className="button delete" onClick={() => handleDelete(bus.busId)}>
-                                        🗑️ Видалити
                                     </button>
                                     <button className="button assign" onClick={() => {
                                         setSelectedBus(bus);

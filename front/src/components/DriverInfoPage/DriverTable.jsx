@@ -1,40 +1,48 @@
-const DriverTable = ({filteredDrivers, handleEditDriver, handleDelete, handleShowAssignments, isAdmin}) => {
+import { CiEdit } from 'react-icons/ci';
+import { IoPersonRemoveOutline } from 'react-icons/io5';
+import { RiCalendarScheduleLine } from 'react-icons/ri';
+
+const DriverTable = ({driver,userRole,handleEditDriver,handleDelete,handleShowAssignments}) => {
+    
+    
     return (
-        <div className="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Ім'я</th>
-                        <th>Досвід</th>
-                        <th>Ліцензія</th>
-                        <th>Дії</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredDrivers.map((driver) => (
-                        <tr key={driver.driverId}>
-                            <td>{driver.driverId}</td>
-                            <td>{driver.name}</td>
-                            <td>{driver.experience}</td>
-                            <td>{driver.license}</td>
-                            <td>
-                                {isAdmin && (
-                                    <>
-                                        <button className="button" onClick={() => handleEditDriver(driver)}>Редагувати</button>
-                                        <button className="button delete" onClick={() => handleDelete(driver.driverId)}>Видалити</button>
-                                    </>
-                                )}
-                                <button className="button assignments" onClick={() => handleShowAssignments(driver.driverId)}>📋 Призначення</button>
-                            </td>
-                        </tr>
-                    ))}
-                    {filteredDrivers.length === 0 && (
-                        <tr><td colSpan="4">Нічого не знайдено</td></tr>
-                    )}
-                </tbody>
-            </table>
-        </div>
+                <div className="driver-card" key={driver.driverId}>
+                    <div className="driver-card-header">
+                        <h3>{driver.name}</h3>
+
+                    </div>
+                    <div className="driver-card-content">
+                        <div className="driver-info-item">
+                            <span className="info-label">Ліцензія:</span>
+                            <span className="info-value">{driver.license}</span>
+                        </div>
+                        <div className="driver-info-item">
+                            <span className="info-label">Досвід:</span>
+                            <span className="info-value">{driver.experience} років</span>
+                        </div>
+                        <div className="driver-info-item">
+                            <span className="info-label">ID:</span>
+                            <span className="info-value">#{driver.driverId}</span>
+                        </div>
+                    </div>
+                    <div className="driver-card-actions">
+                        {userRole === 'admin' && (
+                            <>
+                                <button className="button edit" onClick={() => handleEditDriver(driver)}>
+                                    <CiEdit className='edit-logo' />
+                                    Редагувати
+                                </button>
+                                <button className="button delete" onClick={() => handleDelete(driver.driverId)}>
+                                    <IoPersonRemoveOutline className='edit-logo' /> Видалити
+                                </button>
+                            </>
+                        )}
+                        <button className="button schedule" onClick={() => handleShowAssignments(driver.driverId)}>
+                            <RiCalendarScheduleLine className='edit-logo' style={{ color: 'white' }} /> Розклад
+                        </button>
+                    </div>
+                </div>
+            
     )
 }
 

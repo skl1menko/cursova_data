@@ -1,0 +1,28 @@
+:root {
+    /* Primary Colors */
+    --primary-main: #2563eb;
+    --primary-light: #60a5fa;
+    --primary-rgb: 37, 99, 235;
+    --primary-light-rgb: 96, 165, 250;
+
+    /* Background Colors */
+    --background-default: #f8fafc;
+    --background-paper: #ffffff;
+    --background-default-rgb: 248, 250, 252;
+    --background-paper-rgb: 255, 255, 255;
+
+    /* Text Colors */
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+
+    /* Accent Colors */
+    --accent-success: #10b981;
+    --accent-warning: #f59e0b;
+    --accent-error: #ef4444;
+    --accent-info: #3b82f6;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+} 

@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router';
 import AuthPage from './pages/AuthPage';
 import AdminDashboard from './pages/AdminDashboard';
-import UserHome from './pages/UserHome';
 import DriverInfo from './pages/DriverInfo';
 import SideBar from './components/SideBar';
 import BussInfo from './pages/BussInfo';
@@ -12,6 +11,7 @@ import AnimatedPage from './components/AnimatedPage';
 import { AuthProvider } from './context/AuthContext';
 import { Toaster } from 'react-hot-toast';
 import './App.css';
+import './styles/variables.css';
 import { useState } from 'react';
 
 const AppWrapper = () => {
@@ -27,7 +27,6 @@ const AppWrapper = () => {
                     <Routes location={location} key={location.pathname}>
                         <Route path="/" element={<AnimatedPage><AuthPage /></AnimatedPage>} />
                         <Route path="/admin-dashboard" element={<AnimatedPage><AdminDashboard /></AnimatedPage>} />
-                        <Route path="/user-home" element={<AnimatedPage><UserHome /></AnimatedPage>} />
                         <Route path="/driver-info" element={<AnimatedPage><DriverInfo /></AnimatedPage>} />
                         <Route path="/buss-info" element={<AnimatedPage><BussInfo /></AnimatedPage>} />
                         <Route path="/map-page" element={<AnimatedPage><MapPage /></AnimatedPage>} />

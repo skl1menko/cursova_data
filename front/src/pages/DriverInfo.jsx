@@ -8,13 +8,10 @@ import AddDriverForm from '../components/DriverInfoPage/AddDriverForm';
 import DriverInfoForm from '../components/DriverInfoPage/DriverInfoForm';
 import { useAuth } from '../context/AuthContext';
 import { showToast } from '../utils/toast';
-import { CiEdit } from "react-icons/ci";
-import { IoPersonRemoveOutline } from "react-icons/io5";
-import { RiCalendarScheduleLine } from "react-icons/ri";
-
-
+import { useLocation } from 'react-router';
 
 const DriverInfo = () => {
+    const location = useLocation();
     const [drivers, setDrivers] = useState([]);
     const [name, setName] = useState('');
     const [experience, setExperience] = useState('');
@@ -37,6 +34,13 @@ const DriverInfo = () => {
         };
         fetchData();
     }, []);
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        if (params.get('showAddForm') === 'true') {
+            setShowAddForm(true);
+        }
+    }, [location]);
 
     const resetForm = () => {
         setName('');
@@ -107,44 +111,16 @@ const DriverInfo = () => {
             <h1>Водії</h1>
             <DriverFilter filters={filters} setFilters={setFilters} />
             {userRole === 'admin' && <AddDriverBut setShowAddForm={setShowAddForm} />}
+            
             <div className="drivers-grid">
                 {filteredDrivers.map((driver) => (
-                    <div className="driver-card" key={driver.driverId}>
-                        <div className="driver-card-header">
-                            <h3>{driver.name}</h3>
-                            
-                        </div>
-                        <div className="driver-card-content">
-                            <div className="driver-info-item">
-                                <span className="info-label">Ліцензія:</span>
-                                <span className="info-value">{driver.license}</span>
-                            </div>
-                            <div className="driver-info-item">
-                                <span className="info-label">Досвід:</span>
-                                <span className="info-value">{driver.experience} років</span>
-                            </div>
-                            <div className="driver-info-item">
-                                <span className="info-label">ID:</span>
-                                <span className="info-value">#{driver.driverId}</span>
-                            </div>
-                        </div>
-                        <div className="driver-card-actions">
-                            {userRole === 'admin' && (
-                                <>
-                                    <button className="button edit" onClick={() => handleEditDriver(driver)}>
-                                    <CiEdit className='edit-logo'/>
-                                    Редагувати
-                                    </button>
-                                    <button className="button delete" onClick={() => handleDelete(driver.driverId)}>
-                                    <IoPersonRemoveOutline className='edit-logo' /> Видалити
-                                    </button>
-                                </>
-                            )}
-                            <button className="button schedule" onClick={() => handleShowAssignments(driver.driverId)}>
-                            <RiCalendarScheduleLine className='edit-logo' style={{color: 'white'}}/> Розклад
-                            </button>
-                        </div>
-                    </div>
+                    <DriverTable 
+                    driver={driver}
+                    userRole={userRole}
+                    handleEditDriver={handleEditDriver}
+                    handleDelete={handleDelete}
+                    handleShowAssignments={handleShowAssignments}
+                    />
                 ))}
                 {filteredDrivers.length === 0 && (
                     <div className="no-drivers">Водіїв не знайдено</div>
@@ -153,25 +129,25 @@ const DriverInfo = () => {
 
             {showAddForm && (
                 <div className="modal-overlay">
-                    <AddDriverForm 
-                        selectedDriver={selectedDriver} 
-                        name={name} 
-                        experience={experience} 
-                        license={license} 
-                        handleSaveDriver={handleSaveDriver} 
-                        resetForm={resetForm} 
-                        setName={setName} 
-                        setExperience={setExperience} 
-                        setLicense={setLicense} 
+                    <AddDriverForm
+                        selectedDriver={selectedDriver}
+                        name={name}
+                        experience={experience}
+                        license={license}
+                        handleSaveDriver={handleSaveDriver}
+                        resetForm={resetForm}
+                        setName={setName}
+                        setExperience={setExperience}
+                        setLicense={setLicense}
                     />
                 </div>
             )}
 
             {showAssignmentsModal && assignments && assignments.length > 0 && (
                 <div className="modal-overlay">
-                    <DriverInfoForm 
-                        assignments={assignments} 
-                        setShowAssignmentsModal={setShowAssignmentsModal} 
+                    <DriverInfoForm
+                        assignments={assignments}
+                        setShowAssignmentsModal={setShowAssignmentsModal}
                     />
                 </div>
             )}

@@ -1,4 +1,4 @@
-import { FaBus, FaBars, FaRegAddressCard, FaSignOutAlt } from "react-icons/fa";
+import { FaBus, FaBars, FaRegAddressCard, FaSignOutAlt, FaTachometerAlt } from "react-icons/fa";
 import { GrMap } from "react-icons/gr";
 import { useNavigate, useLocation } from 'react-router';
 import { useState } from 'react';
@@ -23,6 +23,11 @@ const SideBar = ({ onCollapse }) => {
     };
 
     const mainMenuItems = [
+        {
+            icon: <FaTachometerAlt className="sidebar-icon highlight-icon" />,
+            text: "Dashboard",
+            path: '/admin-dashboard'
+        },
         {
             icon: <FaBus className="sidebar-icon highlight-icon" />,
             text: "Buss",

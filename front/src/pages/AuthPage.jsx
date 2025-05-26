@@ -49,7 +49,7 @@ const AuthPage = () => {
                         navigate('/dispatcher-panel');
                         break;
                     case 'user':
-                        navigate('/user-home');
+                        navigate('/admin-dashboard');
                         break;
                     case 'driver':
                         navigate('/driver-info');
