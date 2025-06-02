@@ -24,6 +24,7 @@
     padding: 1.5rem;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    color: #2c2c2c;
 }
 
 .filter-group select,
@@ -225,6 +226,7 @@ tr:hover {
     width: 90%;
     max-width: 600px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: #2c2c2c;
 }
 
 .modal-content h2 {

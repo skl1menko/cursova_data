@@ -1,4 +1,4 @@
-import { CiEdit } from 'react-icons/ci';
+import { FaUserEdit } from "react-icons/fa";
 import { IoPersonRemoveOutline } from 'react-icons/io5';
 import { RiCalendarScheduleLine } from 'react-icons/ri';
 
@@ -29,8 +29,7 @@ const DriverTable = ({driver,userRole,handleEditDriver,handleDelete,handleShowAs
                         {userRole === 'admin' && (
                             <>
                                 <button className="button edit" onClick={() => handleEditDriver(driver)}>
-                                    <CiEdit className='edit-logo' />
-                                    Редагувати
+                                    <FaUserEdit className='edit-logo' /> Редагувати
                                 </button>
                                 <button className="button delete" onClick={() => handleDelete(driver.driverId)}>
                                     <IoPersonRemoveOutline className='edit-logo' /> Видалити

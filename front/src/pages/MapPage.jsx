@@ -54,6 +54,9 @@ const MapPage = () => {
     }, []);
 
     const handleLoadRoute = async (routeId) => {
+        console.log('Clicked route ID:', routeId);
+        console.log('Selected route:', routes.find(route => route.routeNumber === routeId));
+
         if (showRoute && selectedRouteId === routeId) {
             setDirections(null);
             setStops([]);
