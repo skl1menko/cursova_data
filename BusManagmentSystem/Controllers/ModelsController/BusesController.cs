@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using BusManagementSystem.Models;
 
 namespace BusManagementSystem.Controllers
 {
@@ -161,13 +162,6 @@ namespace BusManagementSystem.Controllers
             return Ok(busStats);
         }
 
-        public class DriverAssignmentRequest
-        {
-            public int DriverId { get; set; }
-            public string FirstDepartureTime { get; set; }
-            public string LastDepartureTime { get; set; }
-        }
-
         // POST: api/Buses/5/assign-driver
         [HttpPost("{busId}/assign-driver")]
         public async Task<IActionResult> AssignDriverToBus(int busId, [FromBody] DriverAssignmentRequest request)
@@ -220,7 +214,7 @@ namespace BusManagementSystem.Controllers
                 BusId = busId,
                 DriverId = request.DriverId,
                 FirstDepartureTime = request.FirstDepartureTime,
-                LastDepartureTime = request.LastDepartureTime // Default schedule for 1 day
+                LastDepartureTime = request.LastDepartureTime 
             };
 
             _context.Schedules.Add(schedule);
