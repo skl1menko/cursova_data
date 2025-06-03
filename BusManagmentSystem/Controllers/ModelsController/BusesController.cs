@@ -58,6 +58,17 @@ namespace BusManagementSystem.Controllers
             _context.Buses.Add(bus);
             await _context.SaveChangesAsync();
 
+            // Создаем новый маршрут для автобуса
+            var route = new Route
+            {
+                BusId = bus.BusId,
+                RouteNumber = bus.BusId, // Используем ID автобуса как номер маршрута
+                Description = $"Маршрут {bus.BusId} Черкаси"
+            };
+
+            _context.Routes.Add(route);
+            await _context.SaveChangesAsync();
+
             return CreatedAtAction("GetBus", new { id = bus.BusId }, bus);
         }
 
