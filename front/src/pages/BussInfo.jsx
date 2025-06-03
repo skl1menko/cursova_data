@@ -21,7 +21,9 @@ const BussInfo = () => {
     const [showAssignDriver, setShowAssignDriver] = useState(false);
     const [drivers, setDrivers] = useState([]);
     const [selectedDriver, setSelectedDriver] = useState('');
-    
+    const [firstDepartureTime, setFirstDepartureTime] = useState('');
+    const [lastDepartureTime, setLastDepartureTime] = useState('');
+
     const { userRole } = useAuth();
 
     useEffect(() => {
@@ -152,13 +154,28 @@ const BussInfo = () => {
                     return;
                 }
 
-                await assignDriverToBus(busId, driverId);
+                if (!firstDepartureTime) {
+                    showToast.error('Будь ласка, вкажіть час першого відправлення');
+                    return;
+                }
+
+                if (!lastDepartureTime) {
+                    showToast.error('Будь ласка, вкажіть час останнього відправлення');
+                    return;
+                }
+
+                await assignDriverToBus(busId, driverId, {
+                    firstDeparture: firstDepartureTime,
+                    lastDeparture: lastDepartureTime
+                });
                 showToast.success('Водія успішно призначено до автобуса');
             }
-            
+
             setShowAssignDriver(false);
             setSelectedDriver('');
-            
+            setFirstDepartureTime('');
+            setLastDepartureTime(''); // Скидаємо час після успішного призначення
+
             // Оновлюємо список автобусів
             const updatedBuses = await Promise.all(
                 buses.map(async (bus) => {
@@ -178,7 +195,7 @@ const BussInfo = () => {
                 })
             );
             setBuses(updatedBuses);
-            
+
             // Refresh bus stats if they are currently shown
             if (showStats && busStats && busStats.busId === busId) {
                 const stats = await getBusStats(busId);
@@ -201,7 +218,7 @@ const BussInfo = () => {
         return '';
     };
 
-  
+
 
     const filteredBuses = buses.filter(bus =>
         (filters.model === '' || bus.model.toLowerCase().includes(filters.model.toLowerCase())) &&
@@ -220,10 +237,10 @@ const BussInfo = () => {
             <h1>Автобуси</h1>
 
             <BussFilter filters={filters} setFilters={setFilters} uniqueModels={uniqueModels} handleModelChange={handleModelChange} />
-            
+
             {userRole === 'admin' && (
                 <AddBussBut setShowAddForm={setShowAddForm} />
-                
+
             )}
 
             <div className="buses-grid">
@@ -358,8 +375,8 @@ const BussInfo = () => {
                 <div className="modal-overlay">
                     <div className="modal-content">
                         <h2>Призначити водія до автобуса {selectedBus.busId}</h2>
-                        <select 
-                            value={selectedDriver || getCurrentDriver(selectedBus)} 
+                        <select
+                            value={selectedDriver || getCurrentDriver(selectedBus)}
                             onChange={(e) => setSelectedDriver(e.target.value)}
                             className="driver-select"
                         >
@@ -370,15 +387,44 @@ const BussInfo = () => {
                                 </option>
                             ))}
                         </select>
+                        <div className="time-picker">
+                            <div className="time-picker-input">
+                                <div className="time-input-group">
+                                    <span>Час першого відправлення</span>
+                                    <input
+                                        type="time"
+                                        id="first-departure"
+                                        name="first-departure"
+                                        min="09:00"
+                                        max="18:00"
+                                        value={firstDepartureTime}
+                                        onChange={(e) => setFirstDepartureTime(e.target.value)}
+                                        required />
+                                </div>
+                                <div className="time-input-group">
+                                    <span>Час останнього відправлення</span>
+                                    <input
+                                        type="time"
+                                        id="last-departure"
+                                        name="last-departure"
+                                        min="09:00"
+                                        max="18:00"
+                                        value={lastDepartureTime}
+                                        onChange={(e) => setLastDepartureTime(e.target.value)}
+                                        required />
+                                </div>
+                            </div>
+                        </div>
+
                         <div className="modal-buttons">
-                            <button 
-                                className="button" 
+                            <button
+                                className="button"
                                 onClick={() => handleAssignDriver(selectedBus.busId)}
                             >
                                 {selectedDriver || getCurrentDriver(selectedBus) ? 'Змінити водія' : 'Призначити'}
                             </button>
-                            <button 
-                                className="button cancel" 
+                            <button
+                                className="button cancel"
                                 onClick={() => {
                                     setShowAssignDriver(false);
                                     setSelectedDriver('');

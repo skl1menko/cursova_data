@@ -128,6 +128,24 @@
     font-size: 1.1rem;
 }
 
+.time-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.time-picker-label {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.time-picker-input{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
 /* Стили для кнопок в модальном окне */
 .modal-buttons .button {
     min-width: 120px;

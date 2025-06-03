@@ -66,9 +66,13 @@ export const getBusStats = async (id) => {
 };
 
 // POST: призначити водія до автобуса
-export const assignDriverToBus = async (busId, driverId) => {
+export const assignDriverToBus = async (busId, driverId, scheduleData) => {
     try {
-        const response = await axios.post(`${API_BASE}/${busId}/assign-driver`, { driverId }, {
+        const response = await axios.post(`${API_BASE}/${busId}/assign-driver`, { 
+            driverId,
+            firstDepartureTime: scheduleData.firstDeparture,
+            lastDepartureTime: scheduleData.lastDeparture
+        }, {
             headers: {
                 'Content-Type': 'application/json'
             }
