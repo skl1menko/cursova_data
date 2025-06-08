@@ -3678,25 +3678,24 @@
     ]
   },
   "packageFolders": {
-    "/Users/sashaklymenko/.nuget/packages/": {}
+    "C:\\Users\\alkli\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/sashaklymenko/Desktop/1/cursova_data/BusManagmentSystem/BusManagmentSystem.csproj",
+      "projectUniqueName": "E:\\cursova3cursa\\cursova_data\\BusManagmentSystem\\BusManagmentSystem.csproj",
       "projectName": "BusManagmentSystem",
-      "projectPath": "/Users/sashaklymenko/Desktop/1/cursova_data/BusManagmentSystem/BusManagmentSystem.csproj",
-      "packagesPath": "/Users/sashaklymenko/.nuget/packages/",
-      "outputPath": "/Users/sashaklymenko/Desktop/1/cursova_data/BusManagmentSystem/obj/",
+      "projectPath": "E:\\cursova3cursa\\cursova_data\\BusManagmentSystem\\BusManagmentSystem.csproj",
+      "packagesPath": "C:\\Users\\alkli\\.nuget\\packages\\",
+      "outputPath": "E:\\cursova3cursa\\cursova_data\\BusManagmentSystem\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/sashaklymenko/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\alkli\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "/usr/local/share/dotnet/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3751,6 +3750,24 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.16, 8.0.16]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[8.0.16, 8.0.16]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.16, 8.0.16]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.16, 8.0.16]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -3759,7 +3776,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.204/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

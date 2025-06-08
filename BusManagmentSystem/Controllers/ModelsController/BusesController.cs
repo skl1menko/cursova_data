@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BusManagementSystem.Models;
 
 namespace BusManagementSystem.Controllers
 {
@@ -160,6 +159,13 @@ namespace BusManagementSystem.Controllers
             }
 
             return Ok(busStats);
+        }
+
+        public class DriverAssignmentRequest
+        {
+            public int DriverId { get; set; }
+            public string FirstDepartureTime { get; set; }
+            public string LastDepartureTime { get; set; }
         }
 
         // POST: api/Buses/5/assign-driver
