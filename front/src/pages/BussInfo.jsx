@@ -26,6 +26,56 @@ const BussInfo = () => {
 
     const { userRole } = useAuth();
 
+    // Add new function to get assigned driver IDs
+    const getAssignedDriverIds = () => {
+        const assignedIds = new Set();
+        buses.forEach(bus => {
+            if (bus.Schedules && bus.Schedules.length > 0) {
+                bus.Schedules.forEach(schedule => {
+                    if (schedule.driver) {
+                        assignedIds.add(schedule.driver.driverId);
+                    }
+                });
+            }
+        });
+        return assignedIds;
+    };
+
+    // Add function to get available drivers
+    const getAvailableDrivers = () => {
+        const assignedIds = getAssignedDriverIds();
+        // If we're editing a bus that has a driver, include that driver in the list
+        if (selectedBus && getCurrentDriver(selectedBus)) {
+            const currentDriverId = parseInt(getCurrentDriver(selectedBus));
+            return drivers.filter(driver => 
+                !assignedIds.has(driver.driverId) || driver.driverId === currentDriverId
+            );
+        }
+        return drivers.filter(driver => !assignedIds.has(driver.driverId));
+    };
+
+    // Add new function to get current schedule times
+    const getCurrentScheduleTimes = (bus) => {
+        if (bus.Schedules && bus.Schedules.length > 0) {
+            const schedule = bus.Schedules[0];
+            return {
+                firstDeparture: schedule.firstDeparture || '',
+                lastDeparture: schedule.lastDeparture || ''
+            };
+        }
+        return { firstDeparture: '', lastDeparture: '' };
+    };
+
+    // Add new function to handle opening the assign driver modal
+    const handleOpenAssignDriver = (bus) => {
+        setSelectedBus(bus);
+        setSelectedDriver(getCurrentDriver(bus));
+        const times = getCurrentScheduleTimes(bus);
+        setFirstDepartureTime(times.firstDeparture);
+        setLastDepartureTime(times.lastDeparture);
+        setShowAssignDriver(true);
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -164,6 +214,13 @@ const BussInfo = () => {
                     return;
                 }
 
+                // Сначала открепляем текущего водителя, если он есть
+                const currentDriver = getCurrentDriver(selectedBus);
+                if (currentDriver) {
+                    await removeDriverFromBus(busId);
+                }
+
+                // Затем назначаем нового водителя
                 await assignDriverToBus(busId, driverId, {
                     firstDeparture: firstDepartureTime,
                     lastDeparture: lastDepartureTime
@@ -218,8 +275,6 @@ const BussInfo = () => {
         return '';
     };
 
-
-
     const filteredBuses = buses.filter(bus =>
         (filters.model === '' || bus.model.toLowerCase().includes(filters.model.toLowerCase())) &&
         (filters.capacity === '' || bus.capacity === parseInt(filters.capacity)) &&
@@ -240,7 +295,6 @@ const BussInfo = () => {
 
             {userRole === 'admin' && (
                 <AddBussBut setShowAddForm={setShowAddForm} />
-
             )}
 
             <div className="buses-grid">
@@ -280,10 +334,7 @@ const BussInfo = () => {
                                     <button className="button edit" onClick={() => handleEditBus(bus)}>
                                         ✏️ Редагувати
                                     </button>
-                                    <button className="button assign" onClick={() => {
-                                        setSelectedBus(bus);
-                                        setShowAssignDriver(true);
-                                    }}>
+                                    <button className="button assign" onClick={() => handleOpenAssignDriver(bus)}>
                                         👤 Призначити водія
                                     </button>
                                 </>
@@ -381,7 +432,7 @@ const BussInfo = () => {
                             className="driver-select"
                         >
                             <option value="">Оберіть водія</option>
-                            {drivers.map((driver) => (
+                            {getAvailableDrivers().map((driver) => (
                                 <option key={driver.driverId} value={driver.driverId}>
                                     {driver.name} (Ліцензія: {driver.license})
                                 </option>
@@ -395,8 +446,6 @@ const BussInfo = () => {
                                         type="time"
                                         id="first-departure"
                                         name="first-departure"
-                                        min="09:00"
-                                        max="18:00"
                                         value={firstDepartureTime}
                                         onChange={(e) => setFirstDepartureTime(e.target.value)}
                                         required />
@@ -407,8 +456,6 @@ const BussInfo = () => {
                                         type="time"
                                         id="last-departure"
                                         name="last-departure"
-                                        min="09:00"
-                                        max="18:00"
                                         value={lastDepartureTime}
                                         onChange={(e) => setLastDepartureTime(e.target.value)}
                                         required />
@@ -421,7 +468,7 @@ const BussInfo = () => {
                                 className="button"
                                 onClick={() => handleAssignDriver(selectedBus.busId)}
                             >
-                                {selectedDriver || getCurrentDriver(selectedBus) ? 'Змінити водія' : 'Призначити'}
+                                {getCurrentDriver(selectedBus) ? 'Змінити водія' : 'Призначити водія'}
                             </button>
                             <button
                                 className="button cancel"
