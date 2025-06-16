@@ -40,7 +40,7 @@ const AppWrapper = () => {
 function App() {
     return (
         <AuthProvider>
-            <LoadScript googleMapsApiKey="AIzaSyAantXcM4bJhW6XC6eR4-Z9hWySQQr-Nto">
+            <LoadScript googleMapsApiKey="AIzaSyA9fc8wmjfyYOmS-y2eDWwznEOvwapebrs">
                 <Router>
                     <AppWrapper />
                     <Toaster />
