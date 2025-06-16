@@ -8,6 +8,7 @@ import {
 import './MapPage.css';
 
 import { fetchRouteById, fetchAllRoutes } from '../api/route-api';
+import { showToast } from '../utils/toast';
 
 const MapPage = () => {
     const [directions, setDirections] = useState(null);
@@ -73,6 +74,10 @@ const MapPage = () => {
             setShowRoute(true);
             setRouteRequested(false);
             setSelectedRouteId(routeId);
+            const route = routes.find(route => route.routeNumber === routeId);
+            if (route) {
+                showToast.success(`Маршрут ${route.routeNumber}`);
+            }
         } catch (error) {
             console.error('Failed to load route:', error);
         }
